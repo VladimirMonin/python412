@@ -1,24 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lesson 21</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   </head>
   <body>
-    <ul>
-        <li>Знакомство с <code>Async</code></li>
-        <li>Пишем наш запрос с помощью новых возможностей</li>
-        <li>Выполняем экзаменационную работу</li>
-        <li>Добавляем обработку времени</li>
-    </ul>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+<h1>Погодное приложение</h1>
+
     <form action="">
-      <input type="text" name="" id="input" />
-      <input type="submit" value="Искать" id="formButton" />
+      <!-- Группа полей, чтобы сделать в линию -->
+       <div class="input-group mb-3">
+        <input type="text" name="" id="input" class="form-control" placeholder="Введите город">
+      <button class="btn btn-primary" id="formButton">Поиск</button>
     </form>
-    <p id="result">Погода...</p>
+    </div>
+</div>
+</div>
+    <div class="row">
+        <!-- 3 колонки, схлапываются на MD экранах -->
+         <div class="col-md-4">
+            <h2>Текущая погода</h2>
+        </div>
+        <div class="col-md-4" id="forecastDiv">
+            <h2>Погда на 5 дней</h2>
+        </div>
+        <div class="col-md-4">
+            <h2>Данные о воздухе</h2>
+            <div class="alert" id="airPollution">Состояние воздуха</div>
+        </div>
+    </div>
+</div>
+    <!-- <p id="result">Погода...</p> -->
     <!-- <script src="lesson_20.js">   
     </script> -->
     <script src="lesson_21.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
