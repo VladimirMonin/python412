@@ -1,0 +1,267 @@
+<!-- 
+Lesson 5
+
+1. Внутренние ссылки с якорями, для перемещения по документу
+2. Отступы в CSS. Свойство margin и padding
+3. Единицы измерения в CSS
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Урок 5. Единицы измерения. Формы." />
+    <title>Ссылки и якоря</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Neucha&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        /* background-color: lightcyan; */
+        /* Дадим отступ 5% и автоматическое выравнивание */
+        font-family: sans-serif;
+        /* курсив */
+        font-style: italic;
+      }
+
+      /* Красим секции через 1 */
+        section:nth-child(even) {
+            background-color: lightgray;
+        }
+      .container {
+        max-width: 90%;
+        min-width: 320px;
+        margin: 0 auto;
+        /* padding: 20px; */
+        background-color: lightcyan;
+        border-radius: 10px;
+        box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .neucha-regular {
+        font-family: "Neucha", cursive;
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      h2 {
+        font-family: "Neucha", cursive;
+      }
+
+      img {
+        width: 80%;
+        max-width: 800px;
+        min-width: 200px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        border: 1px solid black;
+        border-radius: 10px;
+        box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Плавная прокрутка при переходе по ссылке меню */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* button {
+        display: block;
+        margin: 5px;
+      } */
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <!-- Навигация по страничке -->
+        <nav>
+          <ul>
+            <li><a href="#anchor">Якорь</a></li>
+            <li><a href="#margin">Отступы</a></li>
+            <li><a href="#scope">Единицы измерения</a></li>
+            <li><a href="#images">Изображения</a></li>
+            <li><a href="#links">Ссылки и кнопки</a></li>
+            <li><a href="#forms">Формы</a></li>
+          </ul>
+        </nav>
+      </header>
+      <h1 class="neucha-regular">Ссылки и якоря в HTML</h1>
+
+      <!-- h2 - Создание якорной ссылки. Делаем заголовок и он же якорь -->
+      <section>
+      <h2 id="anchor">Якорь</h2>
+      <p>
+        Якорь - это ссылка на определенное место на странице. Для создания якоря
+        используется атрибут id. Например,
+        <code>&lt;h2 id="anchor"&gt;Якорь&lt;/h2&gt;</code> создает якорь с
+        <code>id="anchor"</code>.
+      </p>
+      <p>
+        Для того чтобы создать ссылку на якорь, используется тег
+        <code>&lt;a&gt;</code> с атрибутом <code>href="#anchor"</code>.
+      </p>
+    </section>
+    <section>
+      <h2 id="margin"><code>margin</code> и запись "в круг"</h2>
+      <p>
+        Свойство <code>margin</code> задает внешние отступы элемента. Отступы
+        могут быть заданы в пикселях, процентах, em, rem и других единицах
+        измерения.
+      </p>
+      <p>
+        Если мы пишем одно число, то отступы будут одинаковыми со всех сторон.
+        Например, <code>margin: 10px;</code> задаст отступы по 10 пикселей со
+        всех сторон.
+      </p>
+      <p>
+        Если мы пишем два числа, то первое число задает отступ сверху и снизу, а
+        второе - слева и справа. Например,
+        <code>margin: 10px 20px;</code> задаст отступы по 10 пикселей сверху и
+        снизу, и по 20 пикселей слева и справа.
+      </p>
+      <p>
+        Если мы пишем три числа, то первое число задает отступ сверху, второе -
+        слева и справа, а третье - снизу. Например,
+        <code>margin: 10px 20px 30px;</code> задаст отступы по 10 пикселей
+        сверху, по 20 пикселей слева и справа, и по 30 пикселей снизу.
+      </p>
+      <p>
+        Если мы пишем четыре числа, то первое число задает отступ сверху, второе
+        - справа, третье - снизу, а четвертое - слева. Например,
+        <code>margin: 10px 20px 30px 40px;</code> задаст отступы по 10 пикселей
+        сверху, по 20 пикселей справа, по 30 пикселей снизу, и по 40 пикселей
+        слева.
+      </p>
+    </section>
+    <section>
+    <!-- Emmet - h2#margin{Единицы измерения в CSS} -->
+      <h2 id="scope">Единицы измерения в CSS</h2>
+      <p>В CSS есть несколько единиц измерения:</p>
+      <ul>
+        <li>
+          <code>px</code> - пиксели. Абсолютная единица измерения, отображение
+          может зависеть от плотности пикселей на экране
+        </li>
+        <li>
+          <code>em</code> - относительная единица измерения, которая равна
+          размеру шрифта родительского элемента
+        </li>
+        <li>
+          <code>rem</code> - относительная единица измерения, которая равна
+          размеру шрифта корневого элемента (обычно это
+          <code>&lt;html&gt;</code>)
+        </li>
+        <li>
+          <code>%</code> - проценты. Относительная единица измерения, которая
+          зависит от размера родительского элемента
+        </li>
+        <li>
+          <code>vw</code> - ширина окна просмотра. Относительная единица
+          измерения, которая равна 1% ширины окна просмотра
+        </li>
+        <li>
+          <code>vh</code> - высота окна просмотра. Относительная единица
+          измерения, которая равна 1% высоты окна просмотра
+        </li>
+      </ul>
+    </section>
+    <section>  
+    <h2 id="images">Изображения и относительные размеры</h2>
+      <p>
+        Для того чтобы изображения масштабировались относительно размеров
+        родительского элемента, можно использовать относительные единицы
+        измерения, например, <code>em</code>, <code>rem</code>, <code>%</code>,
+        <code>vw</code>, <code>vh</code>.
+      </p>
+    </section>
+    <section>
+    <h2 id="links">Ссылки и кнопки</h2>
+
+      <img src="../1.jpg" alt="Картинка" />
+      <div>
+        <a href="tel:+1234567890">Позвонить</a>
+        <a href="mailto:example@example.com">Напишите нам</a>
+        <button>Я кнопка!</button><button>Я кнопка!</button>
+        <button>Я кнопка!</button>
+        <button>Я кнопка!</button>
+        <button onclick="alert('Привет!')">Привет!</button>
+      </div>
+    </section>
+    <section>  
+      <h2 id="forms">Формы</h2>
+      <form action="/submit" method="get">
+        <!-- name - ключ запроса, а содержимое - значение
+         /submit?query=kotiki foto bez registracii i sms -->
+        <input type="text" name="query" />
+        <input type="submit" value="Отправить" />
+      </form>
+      <!-- Форма с lable для логина емейл и пароль -->
+        <form action="/submit" method="get">
+            <label for="login">Логин</label>
+            <input type="text" name="login" id="login" />
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" />
+            <label for="password">Пароль</label>
+            <input type="password" name="password" id="password" />
+            <input type="submit" value="Отправить" />
+
+        </form>
+
+        <!-- Такая же форма с нескольими группами fieldset и подписями legend -->
+    <hr />
+        <form action="/submit" method="get">
+            <fieldset>
+                <legend>Информация о пользователе</legend>
+                <label for="login">Логин</label> <br>
+                <input type="text" name="login" id="login" /> <br />
+                <label for="email">Email</label> <br>
+                <input type="email" name="email" id="email" /> <br />
+                <label for="password">Пароль</label> <br>
+                <input type="password" name="password" id="password" /> <br />
+            </fieldset>
+            <fieldset>
+                <legend>Информация о заказе</legend>
+                <label for="product">Продукт</label>
+                <input type="text" name="product" id="product" />
+                <label for="quantity">Количество</label>
+                <input type="number" name="quantity" id="quantity" />
+                <label for="comment">Комментарий</label>
+                <textarea name="comment" id="comment"></textarea>
+            </fieldset>
+            <input type="submit" value="Отправить" />
+
+        </form>
+        <!-- Делаем простую форму через emmet с fildset и legend -->
+        <!-- 
+        1. Тег fieldset - группирует элементы формы
+        2. Тег legend - подпись к группе элементов формы
+        3. Тег label - подпись к элементу формы (емейл)
+        4. Тег input - поле ввода type="email"
+        5. label for="password" - подпись к полю ввода пароля
+        6. input type="password" - поле ввода пароля
+        7. input type checkbox - чекбокс, параметры name и value name="remember" value="true"
+        8. input type="submit" - кнопка отправки формы
+
+        -->
+        <hr>
+        <hr>
+        <form action="/submit" method="get">
+            <fieldset>
+                <legend>Вход</legend>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" />
+                <label for="password">Пароль</label>
+                <input type="password" name="password" id="password" />
+                <label for="remember">Запомнить меня</label>
+                <input type="checkbox" name="remember" value="true" />
+            </fieldset>
+            <input type="submit" value="Отправить" />
+        </section>
+    </div>
+  </body>
+</html>

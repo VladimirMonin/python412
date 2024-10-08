@@ -1,0 +1,46 @@
+<!-- Lesson 6
+Формы. Input type:
+- password - поле ввода пароля
+- checkbox - чекбокс
+- radio - радиокнопка
+- submit - кнопка отправки формы
+- reset - кнопка сброса формы
+- button - кнопка (может отправлять и сбрасывать форму)
+- file - поле для загрузки файла
+- hidden - скрытое поле
+- date - поле для ввода даты
+- time - поле для ввода времени
+- email
+- Number - поле для ввода чисел
+- Range - ползунок
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="", method="POST">
+        <input type="hidden" name="hidden" value="secret token">
+        <label for='range'>Range</label>
+        <input type="range" name="range" id="range" min="20000" max="50000" step="500" value="50000">
+        <!-- Ограничение даты ввода, нельзя вводить будущие даты -->
+        <input type="date" name="date">
+        <input type="datetime" name="datetime">
+        <input type="datetime-local" name="datetime-local">
+        <input type="submit" value="Отправить">
+    </form>
+    <p id="price"></p>
+    <script>
+        const rangeInput = document.getElementById('range');
+        const priceElement = document.getElementById('price');
+
+        rangeInput.addEventListener('input', () => {
+            const price = rangeInput.value;
+            priceElement.textContent = `Цена: ${price} рублей`;
+        });
+    </script>
+</body>
+</html>

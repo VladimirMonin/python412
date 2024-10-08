@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Урок №4. Поговорим про таблицы, селекторы"
+    />
+    <title>Lesson 4</title>
+    <!-- CDN - Content Delivery Network - это сеть серверов, которые хранят копии файлов, которые могут быть загружены на ваш сайт. -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/tomorrow-night-bright.min.css"
+    />
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      /* Виды CSS селекторов 
+      
+      1. h2 - селектор тега, работает на все теги h2
+      2. .red - селектор класса, работает на все элементы с классом red
+      3. #password_input - селектор идентификатора, работает на элемент с id green
+      4. h2.red - селектор тега и класса, работает на все теги h2 с классом red
+      5. .red.blue - работает на все элементы с классами red и blue
+      6. h2.red.blue - работает на все теги h2 с классами red и blue
+      
+      
+      */
+
+      td,
+      th {
+        border: 1px solid black;
+        padding: 15px;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        /* margin: 5px; */
+      }
+
+      th {
+        background-color: lightgray;
+      }
+
+      tfoot > tr > td {
+        text-align: left;
+      }
+
+      .red {
+        background-color: red;
+      }
+
+      #password_input {
+        background-color: green;
+      }
+
+      tfoot {
+        background-color: lightpink;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        /* text-align: left; */
+      }
+
+      tbody > tr:nth-child(even) {
+        /* Варианты nht-child
+        n - номер строки
+        2n - каждая вторая строка
+        2n+1 - каждая нечетная строка
+        3n - каждая третья строка
+        odd - нечетные строки
+        even - четные строки
+        */
+        background-color: lightblue;
+      }
+      /* Псевдоклассы - это специальные ключевые слова, которые добавляются к селектору и позволяют создавать стили для элементов в определенном состоянии 
+      
+      :hover - псевдокласс, который позволяет применить стили к элементу при наведении на него курсора
+      :active - псевдокласс, который позволяет применить стили к элементу во время нажатия на него
+        :focus - псевдокласс, который позволяет применить стили к элементу, когда он находится в фокусе
+        :first-child - псевдокласс, который позволяет применить стили к первому дочернему элементу
+        :last-child - псевдокласс, который позволяет применить стили к последнему дочернему элементу
+        :nth-child(n) - псевдокласс, который позволяет применить стили к элементу, который находится на n-позиции
+        :first-of-type - псевдокласс, который позволяет применить стили к первому элементу определенного типа
+
+      
+      */
+
+      tbody > tr:hover {
+        background-color: lightgreen;
+        /* Эффект всплытия в течении 0.5 секунд увеличивает элемент на 10% */
+        transition: transform 0.7s;
+        transform: scale(1.05);
+        /* смещение вправо и вверх */
+        transform: translate(3n, -3px);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      /* Попробуем совместить hover и nth-child */
+      tbody > tr:nth-child(even):hover {
+        background-color: lightcoral;
+      }
+
+      pre > code {
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      pre > code:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      /* Уберем горизонтальную полосу прокрутки в блоках pre > code чтобы весь код
+      мог поместиться на экране подстоившись под ширину экрана */
+
+        pre > code {
+            white-space: pre-wrap; /* css-свойство, которое позволяет тексту переноситься на новую строку, если он не помещается в блоке */
+            overflow-x: auto; /* css-свойство, которое позволяет добавить горизонтальную полосу прокрутки, если текст не помещается в блоке */
+        }
+    </style>
+  </head>
+
+  <body>
+    <!--  Emmet: table>tr*2>td*5{$} -->
+    <!-- Тег для того, чтобы подписать таблицу - caption - даст подпись в верхней части таблицы -->
+
+    <table>
+      <caption>
+        Таблица №1
+      </caption>
+      <tr>
+        <th>1</th>
+        <th id="password_input">2</th>
+        <th>3</th>
+        <th>4</th>
+        <th>5</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>2</td>
+        <td class="red">3</td>
+        <td>4</td>
+        <td class="red">5</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td class="red">2</td>
+        <td>3</td>
+        <td class="red">4</td>
+        <td>5</td>
+      </tr>
+      <tfoot>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+        </tr>
+      </tfoot>
+    </table>
+    <!--  Emmet - делаем таблицу с подписью, thead, tbody, tfoot. 1 полоса и 6 столбцов в голове, 20 строк в теле, 1 строка в подвале -->
+    <!-- Emmet вариант от Ивана: table>caption{Таблица №2}+(thead>tr>th*6{$})+(tbody>tr*20>td*6{$})+(tfoot>tr>td*6{$}) -->
+    <!-- table>caption{Таблица №2}+thead>tr>th*6{$}+tbody>tr*20>td*6{$}^^tfoot>tr>td*6{$} -->
+    <table>
+      <caption>
+        Таблица №2
+      </caption>
+      <thead>
+        <tr>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>6</td>
+        </tr>
+      </tfoot>
+    </table>
+    <pre><code class="language-javascript hljs">
+// Это пример кода на JavaScript
+number = 5;
+console.log(number);
+        </code></pre>
+
+        <pre><code class="language-python hljs">
+# Это пример кода на Python. Пишем простую функцию:
+def hello():
+    name = input('Введите ваше имя: ')
+    print(f'Привет, {name}!')
+
+# Это очень длинная строка. Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe consectetur delectus nulla eum exercitationem minus est numquam explicabo? Illo omnis distinctio sequi aliquid quisquam in delectus id consectetur veritatis ipsa cumque magni quidem nostrum sunt commodi ea, provident ab dolores tempore, nesciunt ullam! Corrupti ipsam aliquid deleniti tenetur impedit dolores?
+        </code></pre>
+    <!-- Подключаем библиотеку highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

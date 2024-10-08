@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="result"></div>
+    <script>
+      // div id result
+      let div = document.getElementById("result");
+      console.log(div);
+
+      // Добавим в этот элемент объект комментария
+      let commentMsg = "Комментарий добавленный JS";
+      let commentObj = document.createComment(commentMsg);
+      div.appendChild(commentObj);
+
+      // Добавим сюда параграф
+      let pObj = document.createElement("p");
+      pObj.textContent = "Этот параграф добавленный JS";
+      div.appendChild(pObj);
+
+      // Простая таблица в виде массива массивов
+      let table = document.createElement("table");
+
+      let students = [
+        ["Имя", "Возраст", "Группа", "Любимое пиво"],
+        ["Артем", "25", "Python412", "Балтика"],
+        ["Иван", "30", "Python412", "Kozel"],
+        ["Екатерина", "20", "Python412", "Жигулёвское"],
+        ["Богдан", "25", "Python412", "Балтика 0"],
+      ];
+    //   Внешний цикл, обходит массивы (табличные полосы)
+      for (let tRow of students) {
+        let tr = document.createElement("tr");
+        for (let tData of tRow) {
+          // Уберем пробелы вначале и конце
+          tData = tData.trim();
+          let td = document.createElement("td");
+          td.textContent = tData;
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      }
+
+      div.appendChild(table);
+    </script>
+  </body>
+</html>

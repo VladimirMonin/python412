@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Средняя форма заказа суши</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .form-container {
+            width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .checkbox-group label {
+            flex-basis: 50%;
+            margin-bottom: 5px;
+        }
+        input, select, textarea, button {
+            padding: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form action="/submit-order" method="post">
+            <div class="form-group">
+                <label for="name">Имя:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Выберите роллы:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="rolls[]" value="california"> Калифорния</label>
+                    <label><input type="checkbox" name="rolls[]" value="philadelphia"> Филадельфия</label>
+                    <label><input type="checkbox" name="rolls[]" value="dragon"> Дракон</label>
+                    <label><input type="checkbox" name="rolls[]" value="rainbow"> Радуга</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="comments">Комментарии:</label>
+                <textarea id="comments" name="comments"></textarea>
+            </div>
+            <button type="submit">Заказать</button>
+        </form>
+    </div>
+</body>
+</html>

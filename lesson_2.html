@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      /* Селектор - инструмент выборки элементов со страницы */
+      h2 {
+        background-color: lightgreen;
+      }
+
+      .background-green {
+        background-color: lightgreen;
+      }
+
+      .red-text {
+        color: red;
+      }
+
+      code {
+        background-color: lightgray;
+        border: 1px solid black;
+        border-radius: 2px;
+        /* Тень */
+        box-shadow: 2px 1px 5px rgba(212, 69, 8, 0.591);
+      }
+
+      img {
+        width: 200px;
+        height: 200px;
+        border-radius: 5%;
+        border: 3px solid lightgreen;
+        box-shadow: 2px 1px 5px rgba(212, 69, 8, 0.591);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Emmet и его возможности</h1>
+    <h2>Простые команды</h2>
+    <ol>
+      <li class="background-green red-text">
+        <code>!</code> - базовая структура документа
+      </li>
+      <li>
+        <code>h1{Текст}</code> -
+        <span class="red-text">создание</span> заголовка первого уровня
+      </li>
+      <li>
+        <code>h2{Текст}+p{Текст}</code> - создание заголовка второго уровня и
+        абзаца
+      </li>
+      <li>
+        <code>ul>li*3{$. Элемент списка}</code> - создание списка из трех
+        элементов. Будет присутствовать нумерация
+      </li>
+    </ol>
+    <h2>Сложные команды</h2>
+    <!-- Атрибуты, классы, id -->
+    <!-- Параграф, спан с классом  red-text и текстом "Привет!" -->
+    <p>
+      <code>p.red-text{Привет!}</code> - создание абзаца с классом red-text и
+      текстом "Привет!"
+    </p>
+
+    <code>span.red-text>code{print("Hello, World!")}</code> - создание спана с
+    классом red-text и вложенным тегом code и текстом "print("Hello, World!")"
+
+    <p>
+      <code>
+        h2{Вставка изображения в HTML}+img[src="1.jpg" alt="Фотография
+        пользователя"]
+      </code>
+      - создание заголовка второго уровня и вставка изображения с атрибутами src
+      и alt
+    </p>
+
+    <!-- Сделаем заголовок H2 с зеленой заливкой inline CSS -->
+    <h2 style="background-color: lightgreen">3 способа стилизовать HTML</h2>
+    <!-- Опиши 3 способа в параграфах -->
+    <p>
+      1. Встроенные стили -
+      <code
+        >&lt;h2 style="background-color: lightgreen;"&gt;3 способа стилизовать
+        HTML&lt;/h2&gt;</code
+      >
+    </p>
+    <p>
+      2. Внутренние стили -
+      <code
+        >&lt;style&gt; h2 { background-color: lightgreen; } &lt;/style&gt;</code
+      >
+    </p>
+    <p>
+      3. Внешние стили -
+      <code>&lt;link rel="stylesheet" href="style.css"&gt;</code>
+    </p>
+
+    <h2>Вставка изображения в HTML</h2>
+    <img src="1.jpg" alt="Фотография пользователя" />
+    <h2>Как сделать шрифт жирным или курсивом?</h2>
+    <!-- расскажи про b и i -->
+    <p><code>&lt;b&gt;</code> - тег для <b>выделения</b> текста жирным</p>
+    <p><code>&lt;i&gt;</code> - тег для <i>выделения</i> текста курсивом</p>
+  </body>
+</html>

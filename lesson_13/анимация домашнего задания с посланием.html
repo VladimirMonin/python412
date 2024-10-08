@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анимация вложенных циклов</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #root {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .loop-info {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .active { background-color: #90EE90; }
+        .inactive { background-color: #D3D3D3; }
+        .result, .secret-letter {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+        .highlight-yellow { background-color: #FFFF00; }
+        .highlight-green { background-color: #90EE90; }
+        .highlight-red { color: #FF0000; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const secretLetter = [
+            ["DFВsjl24sfFFяВАДОd24fssflj234"],
+            ["asdfFп234рFFdо24с$#afdFFтasfо"],
+            ["оafбasdf%^о^FFжа$#af243ю"],
+            ["afпFsfайFтFsfо13н"],
+            ["fн13Fа1234де123юsdсsfь"],
+            ["чFFтF#Fsfsdf$$о"],
+            ["и$##sfF"],
+            ["вSFSDам"],
+            ["пSFоsfнрSDFаSFвSDF$иFFтsfaсSFя"],
+            ["FFэasdfтDFsfоasdfFт"],
+            ["FяDSFзFFsыSfкFFf"],
+        ];
+
+        const smallRus = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя".split('');
+
+        function NestedLoopsAnimation() {
+            const [outerIndex, setOuterIndex] = React.useState(0);
+            const [middleIndex, setMiddleIndex] = React.useState(0);
+            const [innerIndex, setInnerIndex] = React.useState(0);
+            const [resultArray, setResultArray] = React.useState([]);
+            const [isRunning, setIsRunning] = React.useState(false);
+            const [currentLoop, setCurrentLoop] = React.useState('outer');
+
+            React.useEffect(() => {
+                if (isRunning) {
+                    const timer = setTimeout(() => {
+                        if (outerIndex < secretLetter.length) {
+                            if (middleIndex < secretLetter[outerIndex].length) {
+                                if (innerIndex < secretLetter[outerIndex][middleIndex].length) {
+                                    const char = secretLetter[outerIndex][middleIndex][innerIndex];
+                                    setCurrentLoop('inner');
+                                    if (smallRus.includes(char)) {
+                                        setResultArray(prev => [...prev, char]);
+                                    }
+                                    setInnerIndex(innerIndex + 1);
+                                } else {
+                                    setCurrentLoop('middle');
+                                    setMiddleIndex(middleIndex + 1);
+                                    setInnerIndex(0);
+                                    setResultArray(prev => [...prev, ' ']);
+                                }
+                            } else {
+                                setCurrentLoop('outer');
+                                setOuterIndex(outerIndex + 1);
+                                setMiddleIndex(0);
+                                setInnerIndex(0);
+                            }
+                        } else {
+                            setIsRunning(false);
+                        }
+                    }, 200);
+                    return () => clearTimeout(timer);
+                }
+            }, [outerIndex, middleIndex, innerIndex, isRunning]);
+
+            const getLoopClass = (loop) => {
+                return currentLoop === loop ? 'active' : 'inactive';
+            };
+
+            return (
+                <div>
+                    <h1>Анимация вложенных циклов</h1>
+                    <button onClick={() => setIsRunning(!isRunning)}>
+                        {isRunning ? 'Пауза' : 'Старт/Продолжить'}
+                    </button>
+                    <div>
+                        <div className={`loop-info ${getLoopClass('outer')}`}>
+                            <h3>Внешний цикл</h3>
+                            <p>Индекс: {outerIndex}</p>
+                        </div>
+                        <div className={`loop-info ${getLoopClass('middle')}`}>
+                            <h3>Средний цикл</h3>
+                            <p>Индекс: {middleIndex}</p>
+                        </div>
+                        <div className={`loop-info ${getLoopClass('inner')}`}>
+                            <h3>Внутренний цикл</h3>
+                            <p>Индекс: {innerIndex}</p>
+                        </div>
+                    </div>
+                    <div className="result">
+                        <h2>Результат:</h2>
+                        <p>{resultArray.join('')}</p>
+                    </div>
+                    <div className="secret-letter">
+                        <h2>Secret Letter:</h2>
+                        {secretLetter.map((row, i) => (
+                            <div key={i} className={i === outerIndex ? 'highlight-yellow' : ''}>
+                                {row[0].split('').map((char, j) => (
+                                    <span 
+                                        key={j} 
+                                        className={`
+                                            ${i === outerIndex && j === innerIndex ? 'highlight-green' : ''} 
+                                            ${smallRus.includes(char) ? 'highlight-red' : ''}
+                                        `}
+                                    >
+                                        {char}
+                                    </span>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<NestedLoopsAnimation />, document.getElementById('root'));
+    </script>
+</body>
+</html>

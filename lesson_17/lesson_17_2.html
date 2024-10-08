@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <header>
+        <nav>
+            <ul>
+
+            </ul>
+        </nav>
+    </header>
+</head>
+<body>
+    <h1>Автонаполняемое меню из заголовков H2</h1>
+    <h2>Заголовк номер 1</h2>
+    <h2>Заголовк номер 2</h2>
+    <h2>Заголовк номер 3</h2>
+    <h2>Заголовк номер 4</h2>
+    <h2>Заголовк номер 5</h2>
+    
+    <script>
+        // 1. Получить список заголовков H2
+        let allH2 = document.querySelectorAll('h2');
+        // 2. Пройти циклом по массиву заголовков, и добавить аттрибут id в каждый из них
+        let idCounter = 1;
+        Array.from(allH2).forEach((item) => {
+            item.setAttribute('id', 'h2-' + idCounter);
+            idCounter++;
+        });
+        // 3. Получить header > nav > ul
+        let menu = document.querySelector('header nav ul');
+
+        // 4. Добавить в ul ссылку на каждый заголовок
+        let allH2New = document.querySelectorAll('h2');
+
+        // 5. Идем по обновленному списку заголовков (уже с ID)
+        // Добываем ID и текст и создаем элемент <li><a href="#h2-1">Текст заголовка ...
+        
+        Array.from(allH2New).forEach((item) => {
+            let id = item.getAttribute('id');
+            let text = item.textContent;
+            // 6. Создаем элемент <li><a href="#h2-1">Текст заголовка ...
+            let newLi = `<li><a href="#${id}">${text}</a></li>`;
+            // 7. Добавляем элемент в ul
+            menu.innerHTML += newLi;
+        });
+    </script>
+</body>
+</html>

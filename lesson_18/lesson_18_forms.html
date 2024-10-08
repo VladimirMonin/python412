@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+  </head>
+  <body>
+    <h1>Валидация формы через JS</h1>
+    <div class="row">
+      <div class="col-6">
+        <form>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label"
+              >Адрес электронной почты</label
+            >
+            <input
+              type="email"
+              class="form-control"
+              id="InputEmail"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div id="alertMessage" class="text-danger"></div>
+          <div class="mb-3">
+            <div class="input-group mb-3">
+              <input type="password" class="form-control" id="InputPassword" />
+              <span class="input-group-text">
+                <i class="bi bi-eye-slash" id="togglePassword"></i>
+              </span>
+            </div>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="Check" />
+            <label class="form-check-label" for="exampleCheck1"
+              >Проверить меня</label
+            >
+          </div>
+          <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+      </div>
+
+      <div class="col-6">
+        <h2>Результаты</h2>
+        <div id="result"></div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const inputEmail = document.getElementById("InputEmail");
+      const inputPassword = document.getElementById("InputPassword");
+      const check = document.getElementById("Check");
+      const result = document.getElementById("result");
+      const alertMessage = document.getElementById("alertMessage");
+
+      // События формы:
+      // submit - срабатывает при отправке формы
+      // reset - срабатывает при сбросе формы к начальным значениям
+      // change - срабатывает после завершения изменения значения элемента (для input, select, textarea)
+      // input - срабатывает сразу при изменении значения (для text, password, textarea)
+      // focus - элемент получает фокус
+      // blur - элемент теряет фокус
+
+      // Повешаем на email событие input
+      inputEmail.addEventListener("input", (event) => {
+        // Будем переписывать result
+        result.innerHTML = "";
+        console.log(event);
+        // Проверяем что в поле введено
+        if (inputEmail.value === "") {
+          result.innerHTML = '<p class="text-danger">Поле не заполнено</p>';
+          return;
+        } else {
+          result.innerHTML = `<p class="text-success">${inputEmail.value}</p>`;
+        }
+      });
+
+      // Обработчик ввода пароля, по событию change (после изменения) и проверкой сложности пароля (не менее 8 символов)
+
+      function displayErrors(error) {
+        alertMessage.textContent = error;
+      }
+
+      function validatePassword(password) {
+        if (password.length < 8) {
+          displayErrors("Пароль должен быть не менее 8 символов");
+        } else alertMessage.textContent = "";
+      }
+
+      function getChecked() {
+        // Добываем данные из поля ввода пароля
+        const password = inputPassword.value;
+        // Проверяем что в поле введено
+        validatePassword(password);
+      }
+
+      inputPassword.addEventListener("change", getChecked);
+
+      const togglePassword = document.querySelector("#togglePassword");
+      const password = document.querySelector("#InputPassword");
+      
+      
+      // click - клик по элементу. Тут подойдет событие: mousedown - 
+      togglePassword.addEventListener("click", function () {
+        // ЕСЛИ input типа пароль - меняем на текст, иначе - меняем на пароль
+        const type = password.getAttribute("type") === "password" ? "text" : "password";
+        // Устанавливаем новый тип input
+        password.setAttribute("type", type);
+        // this - ссылается на элемент который обрабатывает событие (иконка)
+        // Добавляет // удаляет иконку 
+        this.classList.toggle("bi-eye");
+        this.classList.toggle("bi-eye-slash");
+      });
+    </script>
+  </body>
+</html>

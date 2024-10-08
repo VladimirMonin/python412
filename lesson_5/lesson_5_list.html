@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список продуктов</title>
+    <style>
+        /* Общий стиль для нумерованного списка */
+        ol {
+            background-color: #ff69b4; /* Насыщенно-розовый фон */
+            padding: 20px;
+            list-style: none; /* Убираем стандартные номера списка */
+            counter-reset: item; /* Сбрасываем счетчик для кастомной нумерации */
+            margin-left: 2%; /* Отступ слева для списка */
+        }
+
+        /* Стиль для каждого элемента списка */
+        li {
+            background-color: #ffe4e1; /* Блекло-розовый фон для текста */
+            color: #333;
+            padding: 10px;
+            margin-bottom: 10px;
+            position: relative; /* Для позиционирования номера */
+        }
+
+        /* Псевдоэлемент для создания номеров */
+        li::before {
+            content: counter(item); /* Используем счетчик для автоматической нумерации */
+            counter-increment: item; /* Увеличиваем значение счетчика на 1 для каждого элемента */
+            background-color: #ff4500; /* Насыщенно-красный фон для номеров */
+            color: white; /* Белый цвет для текста номера */
+            padding: 5px 10px;
+            border-radius: 50%; /* Делаем номера круглыми */
+            position: absolute; /* Абсолютное позиционирование для размещения номера */
+            left: -40px; /* Смещаем номера влево от текста */
+            top: 50%; /* Смещаем номер вертикально на середину текста */
+            transform: translateY(-50%); /* Центрируем номер относительно высоты строки */
+        }
+    </style>
+</head>
+<body>
+    <h1>Список продуктов</h1>
+    <ol>
+        <li>Яблоки</li>
+        <li>Бананы</li>
+        <li>Молоко</li>
+        <li>Хлеб</li>
+        <li>Масло</li>
+    </ol>
+</body>
+</html>

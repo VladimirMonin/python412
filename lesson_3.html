@@ -1,0 +1,97 @@
+<!-- 
+Lesson 3.
+13.08.2024
+1. Строчные и блочные теги
+div и span и их отображение в потоке документа 
+
+2. Семантические теги
+header, main, footer, nav, section, article
+
+header - шапка сайта, где мы можем разместить меню, логотип и прочее
+nav - меню сайта
+main - основное содержимое сайта
+footer - подвал сайта, где мы можем дать карту, контакты и прочее
+section - раздел сайта
+article - статья, блок контента, который может быть самостоятельным
+-->
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Занятие №3" />
+    <style>
+      .red {
+        background-color: red;
+        height: 100px;
+        /* width: 100px; */
+        margin-bottom: 5px;
+      }
+      .blue {
+        background-color: blue;
+      }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    <header>
+      <p>Шапка сайта. Где мы можем разместить меню, логотип и прочее</p>
+      <nav>
+        <p>Меню сайта</p>
+      </nav>
+    </header>
+    <main>
+      <!-- Здесь будет основное содержимое сайта -->
+      <h1>Занятие №3</h1>
+      <h2>Как выглядит div и span в потоке документа</h2>
+      <section>
+        <h3>div</h3>
+        <article>
+          <div class="red"></div>
+        </article>
+        <article>
+          <div class="red"></div>
+        </article>
+        <article>
+          <div class="red"></div>
+        </article>
+      </section>
+      <section>
+        <h3>span</h3>
+        <span class="blue">Привет</span>
+        <span class="blue">Привет</span>
+        <span class="blue">Привет</span>
+      </section>
+      <section>
+        <h3>Специальные символы</h3>
+        <p>&lambda;</p>
+        <p>&spades;</p>
+        <p>&clubs;</p>
+        <p>&hearts;</p>
+        <p>&diams;</p>
+        <p>Как описать код HTML?</p>
+        <code>print('hello')</code>
+        <code>&lt;div&gt;Это див!&lt;/div&gt;</code>
+        <!-- pre - сохраняет форматирование текста -->
+        <p>Код из второй половины курса</p>
+        <pre class="language-python">
+            <code>
+from django.shortcuts import render
+
+# Константа с количеством пользователей
+UsersCount = 123
+
+def about(request):
+    context = {
+        'UsersCount': UsersCount
+    }
+    return render(request, 'about.html', context)
+            </code>
+        </pre>
+      </section>
+    </main>
+    <footer>
+      <p>Подвал сайта. Где мы можем дать карту, контакты и прочее</p>
+    </footer>
+  </body>
+</html>

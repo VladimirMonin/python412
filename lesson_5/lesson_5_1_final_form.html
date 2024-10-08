@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Форма заказа пиццы</title>
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f4e5;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+      .form-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #d32f2f;
+        font-size: 2.5em;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0 20px 0;
+        display: block;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+      input[type="submit"] {
+        background-color: #d32f2f;
+        color: white;
+        padding: 14px 20px;
+        margin: 20px 0 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+      }
+      input[type="submit"]:hover {
+        background-color: #b71c1c;
+      }
+      fieldset {
+        border: 2px solid #e0e0e0;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 6px;
+      }
+      legend {
+        font-weight: bold;
+        padding: 0 10px;
+        color: #d32f2f;
+      }
+      label {
+        margin-bottom: 10px;
+        display: block;
+        font-weight: bold;
+        color: #555;
+      }
+      .checkbox-group,
+      .radio-group {
+        margin-bottom: 20px;
+      }
+      .checkbox-group label,
+      .radio-group label {
+        display: inline-block;
+        margin-right: 15px;
+        font-weight: normal;
+      }
+      .checkbox-group input,
+      .radio-group input {
+        margin-right: 5px;
+      }
+      textarea {
+        height: 120px;
+        resize: vertical;
+      }
+      .required:after {
+        content: "*";
+        color: #d32f2f;
+        margin-left: 5px;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #d32f2f;
+        box-shadow: 0 0 8px rgba(211, 47, 47, 0.3);
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>Заказ пиццы</h1>
+      <form action="/submit-pizza-order" method="POST">
+        <fieldset>
+          <legend>Информация о заказчике</legend>
+          <label for="name" class="required">Имя</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="email" class="required">Email</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="phone">Телефон</label>
+          <input type="tel" id="phone" name="phone" />
+        </fieldset>
+
+        <fieldset>
+          <legend>Выбор пиццы</legend>
+          <label class="required">Выберите виды пиццы</label>
+
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="pizza[]" value="Маргарита" /> Маргарита</label>
+            <label><input type="checkbox" name="pizza[]" value="Пепперони" /> Пепперони</label>
+            <label><input type="checkbox" name="pizza[]" value="Четыре сыра" /> Четыре сыра</label>
+            <label><input type="checkbox" name="pizza[]" value="Гавайская" /> Гавайская</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Размер пиццы</legend>
+          <div class="radio-group">
+            <label><input type="radio" name="size" value="small" required /> Маленькая (25 см)</label>
+            <label><input type="radio" name="size" value="medium" /> Средняя (30 см)</label>
+            <label><input type="radio" name="size" value="large" /> Большая (35 см)</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Дополнительные ингредиенты</legend>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="toppings[]" value="Грибы" /> Грибы</label>
+            <label><input type="checkbox" name="toppings[]" value="Оливки" /> Оливки</label>
+            <label><input type="checkbox" name="toppings[]" value="Бекон" /> Бекон</label>
+            <label><input type="checkbox" name="toppings[]" value="Дополнительный сыр" /> Дополнительный сыр</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Специальные пожелания</legend>
+          <label for="special-instructions">Ваши пожелания</label>
+          <textarea id="special-instructions" name="special_instructions" placeholder="Например: тонкое тесто, без лука и т.д."></textarea>
+        </fieldset>
+
+        <fieldset>
+          <legend>Время доставки</legend>
+          <label for="delivery-time">Выберите время доставки</label>
+          <select id="delivery-time" name="delivery_time">
+            <option value="asap">Как можно быстрее</option>
+            <option value="12-14">12:00 - 14:00</option>
+            <option value="14-16">14:00 - 16:00</option>
+            <option value="16-18">16:00 - 18:00</option>
+            <option value="18-20">18:00 - 20:00</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Способ оплаты</legend>
+          <div class="radio-group">
+            <label><input type="radio" name="payment" value="cash" required /> Наличные</label>
+            <label><input type="radio" name="payment" value="card" /> Карта при получении</label>
+            <label><input type="radio" name="payment" value="online" /> Онлайн оплата</label>
+          </div>
+        </fieldset>
+
+        <input type="submit" value="Заказать пиццу" />
+      </form>
+    </div>
+  </body>
+</html>

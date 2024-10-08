@@ -1,0 +1,6 @@
+ПРОВЕРКА/hw.zip
+.vscode/launch.json
+.vscode/settings.json
+.txt*
+lesson_7/books/*.txt
+lesson_7/books/*.webp

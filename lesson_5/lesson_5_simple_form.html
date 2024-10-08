@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Форма заказа суши</title>
+  </head>
+  <body>
+    <h1>Заказ суши</h1>
+    <!-- action - куда отправляется форма, method - метод отправки
+     GET - отправляет данные в адресную строку,
+     POST - отправляет данные в теле запроса -->
+    <form action="/submit-order" method="get">
+      <!-- Информация о заказчике -->
+      <fieldset>
+        <legend>Информация о заказчике</legend>
+        <label for="name">Имя</label><br />
+        <input type="text" id="name" name="name" required /><br />
+
+        <label for="email">Email</label><br />
+        <input type="email" id="email" name="email" required /><br />
+
+        <label for="phone">Телефон</label><br />
+        <input type="tel" id="phone" name="phone" /><br />
+      </fieldset>
+
+      <!-- Выбор роллов -->
+      <fieldset>
+        <legend>Выбор роллов</legend>
+        <label>Выберите типы роллов</label><br />
+        <!-- /?rolls=Филадельфия&rolls=Калифорния&sticks=plastic -->
+        <label
+          ><input type="checkbox" name="rolls" value="Филадельфия" />
+          Филадельфия</label
+        ><br />
+        <label
+          ><input type="checkbox" name="rolls" value="Калифорния" />
+          Калифорния</label
+        ><br />
+        <label
+          ><input type="checkbox" name="rolls" value="Дракон" /> Дракон</label
+        ><br />
+        <label
+          ><input type="checkbox" name="rolls" value="Спайси" /> Спайси</label
+        ><br />
+      </fieldset>
+
+      <!-- Палочки радио кнопками -->
+      <fieldset>
+        <legend>Выбор палочек</legend>
+        <label
+          ><input type="radio" name="sticks" value="plastic" />
+          Пластиковые</label
+        ><br />
+        <label
+          ><input type="radio" name="sticks" value="wood" />
+          Деревянные</label
+        ><br />
+        <label
+          ><input type="radio" name="sticks" value="false" /> Не нужны</label
+        ><br />
+      </fieldset>
+
+      <!-- Специальные пожелания -->
+      <fieldset>
+        <legend>Специальные пожелания</legend>
+        <label for="special-instructions">Ваши пожелания</label><br />
+        <textarea
+          id="special-instructions"
+          name="special-instructions"
+        ></textarea
+        ><br />
+      </fieldset>
+
+      <!-- Подтверждение заказа -->
+      <input type="submit" value="Оформить заказ" />
+    </form>
+  </body>
+</html>

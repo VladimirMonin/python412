@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Знакомсто с JS</h1>
+    <!-- Кнопочка с событием onclick и alert -->
+     <button onclick="alert('Привет, мир!')">Нажми меня</button>
+     <!-- Кнопка, которая изменит собственный текст по нажатию на неё -->
+     <button onclick="this.textContent = 'Нажми ещё раз'">Нажми меня</button>
+    <div id="message"></div>
+    <ul>
+        <li id="productLiOne"></li>
+        <li id="productLiTwo"></li>
+        <li id="productLiThree"></li>
+    </ul>
+    <script>
+        // var - объявление переменной (старый стиль)
+        // let - объявление переменной (новый стиль)
+        // const - константа (неизменяемая переменная)
+
+        // let userMessage;
+        // let divElement = document.getElementById('message');
+
+        // Попросим пользователя ввести сообщение
+        // userMessage = prompt('Введите сообщение');
+        // Выведем сообщение в div
+        // divElement.innerText = userMessage;
+
+        // Правила нейминга переменных
+        // 1. Название переменной должно быть осмысленным
+        // 2. Название переменной должно быть коротким
+        // 3. Название переменной должно быть уникальным
+        // 4. Название переменной должно быть на английском
+        // 5. Название переменной не должно начинаться с цифры
+        // 6. Не должно содержать пробелов или спецзнаков
+        // 7. lowerCamelCase - пишем слитно, с маленькой буквы, разделяя слова заглавными буквами
+
+        // Типы данных в JavaScript
+        // 1. Числа. Number
+        // 2. Строки. String
+        // 3. Булевые значения. Boolean ДА ИЛИ НЕТ
+        // 4. null НИЧЕГО
+        // 5. undefined - неопределенное значение
+        // 6. Объект
+        // 7.  Массив
+        // 8. Simbol - уникальный идентификатор
+
+
+        // let a = prompt('Введите первое  число'); // Вернет строку!
+        // let b = prompt('Введите второе число'); // Вернет строку!
+
+        // Преобразование строки в число
+        // a = Number(a); // Получаем новый объект класса Number
+        // b = Number(b); 
+
+        // c = a + b; // Складываем уже не строки а числа!
+
+        // Обритились к объекту консоли и вызвали метод Log
+        // Он вывыводит в консоль сообщение
+        // console.log("Сумма введенных чисел равна: ", c);
+
+        // Запросим три пользовательских ввода
+        let productA = prompt('Введите название первого товара');
+        let productB = prompt('Введите название второго товара');
+        let productC = prompt('Введите название третьего товара');
+
+        let result = "Вы купили " + productA + ", " + productB + " и " + productC;
+        let result2 = `Вы купили ${productA}, ${productB} и ${productC}`;
+
+
+        // Выведем результат в консоль
+        console.log(result);
+        console.log(result2);
+
+        // Найдем 3 элемента списков и разложим по переменным
+        let productLiOne = document.getElementById('productLiOne');
+        let productLiTwo = document.getElementById('productLiTwo');
+        let productLiThree = document.getElementById('productLiThree');
+
+        // Запишем в переменные значения элементов списка
+        productLiOne.innerText = productA;
+        productLiTwo.innerText = productB;
+        productLiThree.innerText = productC;
+
+    </script>
+  </body>
+</html>
