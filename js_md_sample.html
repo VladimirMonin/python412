@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пример рендеринга Markdown с Bootstrap 5 и Highlight.js</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <!-- Markdown-it -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <!-- Highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Пример рендеринга Markdown</h1>
+        <div id="output" class="border p-4 rounded"></div>
+    </div>
+
+    <script>
+        // Инициализация markdown-it
+        const md = window.markdownit({
+            highlight: function (str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return hljs.highlight(str, { language: lang }).value;
+                    } catch (__) {}
+                }
+                return ''; // использовать внешний дефолтный эскейпинг
+            }
+        });
+
+        // Пример Markdown-текста
+        const markdownText = `
+# Заголовок первого уровня
+
+## Подзаголовок
+
+Это **жирный текст**, а \`это\` *курсив*.
+
+### Список:
+
+- Первый пункт
+- Второй пункт
+- Третий пункт
+
+\`\`\`javascript
+function hello() {
+    console.log("Привет, мир!");
+}
+\`\`\`
+
+> Это блок цитаты.
+
+>[!warning]
+>### Критерии проверки 👌
+> Выноска с критериями проверки
+
+[Ссылка на Google](https://www.google.com)
+
+![Альтернативный текст](https://via.placeholder.com/150)
+        `;
+
+        // Рендеринг Markdown в HTML
+        const result = md.render(markdownText);
+
+        // Вставка результата в DOM
+        document.getElementById('output').innerHTML = result;
+
+        // Инициализация подсветки синтаксиса
+        hljs.highlightAll();
+    </script>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
