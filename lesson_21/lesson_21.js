@@ -174,6 +174,9 @@ function displayCurrentWeather(currentWeather){
   firstP.appendChild(iconImg);
   textContentFirstP = `Город: ${cityName}`;
   firstP.innerHTML += textContentFirstP;
+
+  // Очистим старые данные
+  currentWeatherDiv.innerHTML = "";
   currentWeatherDiv.appendChild(firstP);
 
   // Второй параграф (второй способ))
@@ -214,35 +217,16 @@ function displayForecastWeather(forecastWeather) {
     // Добавляем строку в таблицу
     table.innerHTML += row;
   }
+  // Очищаем forecastDiv
+  forecastDiv.innerHTML = "";
   // Добавляем таблицу в forecastDiv
   forecastDiv.appendChild(table);
 }
 
 function showModal(message) {
-  const modalHtml = `
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="errorModalLabel">Ошибка</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            ${message}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-  const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+  const modalElement = document.getElementById('errorModal');
+  const modalMessage = document.getElementById('modalMessage');
+  modalMessage.textContent = message;
+  const modal = new bootstrap.Modal(modalElement);
   modal.show();
-
-  document.getElementById('errorModal').addEventListener('hidden.bs.modal', function () {
-    this.remove();
-  });
 }
