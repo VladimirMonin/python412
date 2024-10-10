@@ -15,7 +15,7 @@
     <form action="">
       <!-- Группа полей, чтобы сделать в линию -->
        <div class="input-group mb-3">
-        <input type="text" name="" id="input" class="form-control" placeholder="Введите город">
+        <input type="text" name="" id="input" class="form-control" placeholder="Введите город" pattern="^[а-яА-Яa-zA-Z\s-]+$" title="Используйте только буквы, пробелы и тире">
       <button class="btn btn-primary" id="formButton">Поиск</button>
     </form>
     </div>
@@ -23,13 +23,13 @@
 </div>
     <div class="row">
         <!-- 3 колонки, схлапываются на MD экранах -->
-         <div class="col-md-4">
+         <div class="col-lg-4" id="currentWeather">
             <h2>Текущая погода</h2>
         </div>
-        <div class="col-md-4" id="forecastDiv">
+        <div class="col-lg-4" id="forecastDiv">
             <h2>Погда на 5 дней</h2>
         </div>
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <h2>Данные о воздухе</h2>
             <div class="alert" id="airPollution">Состояние воздуха</div>
         </div>

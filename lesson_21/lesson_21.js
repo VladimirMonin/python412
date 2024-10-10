@@ -5,9 +5,10 @@ const units = "metric";
 const lang = "ru";
 const input = document.getElementById("input");
 const formButton = document.getElementById("formButton");
-const pResult = document.getElementById("result");
 const airPollutionDiv = document.getElementById("airPollution");
 const forecastDiv = document.getElementById("forecastDiv");
+const currentWeatherDiv = document.getElementById("currentWeather");
+
 const airPollutionDescriptionObj = {
     1: {
       description: "Отличное",
@@ -32,15 +33,18 @@ const airPollutionDescriptionObj = {
   };
   
 
-// http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-// Функция получает город из формы, формирует URL для запроса к GEOAPI, выполняет запрос, получает ответ, возвращает объект с данными о городе. lat lon ключи (создадим новый компактный объект)
-
-async function getGeoByCityName() {
-  const cityName = input.value;
+async function getGeoByCityName(cityName) {
   const url = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
   const response = await fetch(url);
   if (response.ok) {
     const data = await response.json();
+
+
+    // Проверка на пустой массив. И Alert
+    if (data.length === 0) {
+      showModal("Город не найден");
+      throw new Error("Город не найден");
+    }
 
     clearDana = {
       lat: data[0].lat,
@@ -53,12 +57,6 @@ async function getGeoByCityName() {
     throw new Error(`HTTP-код ошибки: ${response.status}`);
   }
 }
-
-// Функция будет формировать объект, где ключи будут названиями маршрутов
-// а значения, адресами для запросов к API
-// Текущая погода (принимает так же язык и систему измерения) - https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
-// Прогноз на 5 дней (принимает так же язык и систему измерения) - api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
-// Состояние воздуха (нет доп. аргументов) - http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={API key}
 
 function getUrlByInput(lat, lon) {
   let weatherUrlsObject = {
@@ -82,20 +80,27 @@ async function getWeather(url) {
 
 formButton.addEventListener("click", async (event) => {
   event.preventDefault();
-  let geoData = await getGeoByCityName();
+  const cityName = input.value;
+  localStorage.setItem("cityName", cityName);
+  displayAllWeather(cityName);
+});
+
+// Добавим листнер на документ, чтобы по загрузке страницы проверяли наличие города в localStorage и если он там есть, он ставился бы в value инпута и вызывался бы метод displayAllWeather по этому городу
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cityName = localStorage.getItem("cityName");
+  if (cityName) {
+    input.value = cityName;
+    displayAllWeather(cityName);}
+
+  })
+
+async function displayAllWeather(cityName) {
+  let geoData = await getGeoByCityName(cityName);
   console.log(geoData);
   let urlsObject = getUrlByInput(geoData.lat, geoData.lon);
   console.log(urlsObject);
 
-  // Получаем данные о погоде (вариант по очереди)
-  // let currentWeather = await getWeather(urlsObject.currentWeather);
-  // console.log(currentWeather);
-  // let forecastWeather = await getWeather(urlsObject.forecastWeather);
-  // console.log(forecastWeather);
-  // let airPollution = await getWeather(urlsObject.airPollution);
-  // console.log(airPollution);
-
-  // Получаем данные о погоде (вариант параллельно)
   let weatherData = await Promise.all([
     getWeather(urlsObject.currentWeather),
     getWeather(urlsObject.forecastWeather),
@@ -114,12 +119,12 @@ formButton.addEventListener("click", async (event) => {
 
   // Состояние воздуха
   displayAirPollution(resultWeatherData.airPollution);
-});
+  // Текущая погода
+  displayCurrentWeather(resultWeatherData.currentWeather);
+  // Прогноз на 5 дней
+  displayForecastWeather(resultWeatherData.forecastWeather);
+}
 
-// list.main.aqi - Где лежит цифра с качеством воздуха?
-// Оценивается от 1 до 5, где 1 - лучшее, 5 - хуже
-
-// Функция которая принимает объект с состоянием воздуха, и опираясь на airPollutionDescriptionObj в airPollution меняет классы и текст
 
 function displayAirPollution(airPollution) {
   const airPollutionDescription = airPollutionDescriptionObj[airPollution.list[0].main.aqi];
@@ -133,30 +138,111 @@ function displayAirPollution(airPollution) {
   airPollutionDiv.classList.add(airPollutionDescription.bsClass);
   // Добавляем текст
   airPollutionDiv.textContent = airPollutionDescription.description;
+
 }
 
-// Функция которая в forecastDiv в конец добавляет наследника table и рисует BS5 таблицу с прогнозом погоды
-//
+function getIconUrl(iconCode, size) {
+  if (size === undefined) {
+    size = "";
+  }
+  else if (size === "4x") {
+    size = "@4x";
+  }
+  else if (size === "2x") {
+    size = "@2x";
+  }
+  else {
+    throw new Error("Неизвестный размер");
+  }
 
-// "list": [
-//     {
-//       "dt": 1661871600,
-//       "main": {
-//         "temp": 296.76,
-//         "feels_like": 296.98,
-//         "temp_min": 296.76,
-//         "temp_max": 297.87,
-//         "pressure": 1015,
-//         "sea_level": 1015,
-//         "grnd_level": 933,
-//         "humidity": 69,
-//         "temp_kf": -1.11
-//       },
-//       "weather": [
-//         {
-//           "id": 500,
-//           "main": "Rain",
-//           "description": "light rain",
-//           "icon": "10d"
-//         }
-//       ],
+  return `https://openweathermap.org/img/wn/${iconCode}${size}.png`;
+}
+
+function displayCurrentWeather(currentWeather){
+  const cityName = currentWeather.name;
+  const iconID = currentWeather.weather[0].icon;
+  const iconUrl = getIconUrl(iconID, "4x");
+  const temp = currentWeather.main.temp;
+  const feelsLike = currentWeather.main.feels_like;
+  const windSpeed = currentWeather.wind.speed;
+
+  //  Первый параграф
+  firstP = document.createElement("p");
+  iconImg = document.createElement("img");
+  iconImg.src = iconUrl;
+  console.log(iconImg);
+  firstP.appendChild(iconImg);
+  textContentFirstP = `Город: ${cityName}`;
+  firstP.innerHTML += textContentFirstP;
+  currentWeatherDiv.appendChild(firstP);
+
+  // Второй параграф (второй способ))
+  secontPContent = `<p>Температура: ${temp}, ощущается как ${feelsLike}, ветер: ${windSpeed}</p>`;
+
+  currentWeatherDiv.innerHTML += secontPContent;
+}
+
+function displayForecastWeather(forecastWeather) {
+
+  // Создаем элементы
+  const table = document.createElement("table");
+  // Добавляем классы table table-striped table-hover
+  table.classList.add("table", "table-striped", "table-hover");
+  
+  // Первая строка
+  const firstRow = "<tr><th>Дата</th><th>Иконка</th><th>Температура</th><th>Ветер</th></tr>";
+  table.innerHTML = firstRow;
+
+  // Объявляем цикл который перебирает массив forecastWeather.list
+  // и создает строки таблицы
+
+  for (let weatherObj of forecastWeather.list) {
+    // Получаем данные из очередного объекта
+      
+    const dateTime = weatherObj.dt_txt; // "2022-08-30 15:00:00"
+    const date = dateTime.split(" ")[0]; // "2022-08-30"
+    const time = dateTime.split(" ")[1].split(":")[0] + "ч."; // "15ч."
+    const finalDateTime = date + " " + time;
+    const idIcon = weatherObj.weather[0].icon;
+    const iconUrl = getIconUrl(idIcon);
+    const temp = weatherObj.main.temp;
+    const windSpeed = weatherObj.wind.speed;
+
+    // Создаем строку таблицы
+    const row = `<tr><td>${finalDateTime}</td><td><img src="${iconUrl}" alt="Иконка погоды"></td><td>${temp}</td><td>${windSpeed}</td></tr>`;
+
+    // Добавляем строку в таблицу
+    table.innerHTML += row;
+  }
+  // Добавляем таблицу в forecastDiv
+  forecastDiv.appendChild(table);
+}
+
+function showModal(message) {
+  const modalHtml = `
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="errorModalLabel">Ошибка</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            ${message}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+  modal.show();
+
+  document.getElementById('errorModal').addEventListener('hidden.bs.modal', function () {
+    this.remove();
+  });
+}
