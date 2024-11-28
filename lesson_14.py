@@ -29,11 +29,27 @@ a()
 # b() # TypeError: 'NoneType' object is not callable
 
 # Аргументы функции и возврат значения
-def get_message(name, message):
+def get_message(name, message, age=18):
+    # Проверка на типы данных
+    if not isinstance(name, str):
+        raise TypeError('Имя должно быть строкой')
+    if not isinstance(message, str):
+        raise TypeError('Сообщение должно быть строкой')
+    if not isinstance(age, int):
+        raise TypeError('Возраст должен быть числом')
+
+    if age < 18:
+        message += ' (несовершеннолетний)'
+    else:
+        message += ' (совершеннолетний)'
+    
+    
     name = name.capitalize()
     message = message.lower()
-    return f'{name}, {message}!'
+    return f'Твоё имя:{name}\nСообщение для тебя:{message}!'
 
-get_message('Nick', 'Hello')
-result = get_message('Nick', 'Hello')
-print(result)
+print(get_message('Вася', 'привет!'))
+print(get_message('Таня', 'привет!'))
+print(get_message('Боб', 'Пока!', 16))
+# print(get_message('Пока')) # TypeError: get_message() missing 1 required positional argument: 'message'
+# print(get_message('Пока', 'Боб!', 'Таня')) # TypeError: get_message() takes 2 positional arguments but 3 were given
