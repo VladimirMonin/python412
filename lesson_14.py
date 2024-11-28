@@ -27,3 +27,13 @@ print(b)
 
 a()
 # b() # TypeError: 'NoneType' object is not callable
+
+# Аргументы функции и возврат значения
+def get_message(name, message):
+    name = name.capitalize()
+    message = message.lower()
+    return f'{name}, {message}!'
+
+get_message('Nick', 'Hello')
+result = get_message('Nick', 'Hello')
+print(result)
