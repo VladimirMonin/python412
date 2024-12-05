@@ -3,3 +3,6 @@
 __pycache__/
 *.zip
 hw/cities.py
+lesson_15/weather_utlis.spec
+lesson_15/build/
+lesson_15/dist/
