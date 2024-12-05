@@ -52,9 +52,23 @@ get_products(*products)
 get_products(products[0], products[1], products[2])
 
 # Проверка на палиндром
-def is_palindrome(*words:str) -> bool:
+def is_palindrome(*words:str) -> dict:
     """
     Функция проверки слова на палиндром
     :param word: str - слово для проверки
     """
-    print(words)
+    result = {}
+    for word in words:
+        raw_word = word.lower().replace(' ', '')
+        result[word] = raw_word == raw_word[::-1]
+
+    return result
+
+result = is_palindrome("шалаш", "топот", "дед", "мадам", "а роза упала на лапу азора")
+
+print(result)
+
+words = ["шалаш", "топот", "дед", "мадам", "а роза упала на лапу азора"]
+
+print(is_palindrome(*words))
+
