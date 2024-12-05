@@ -72,3 +72,24 @@ words = ["шалаш", "топот", "дед", "мадам", "а роза упа
 
 print(is_palindrome(*words))
 
+# **kwargs - произвольное число именованных аргументов
+
+message_dict = {
+    "name": "Вася",
+    "message": "привет!",
+}
+
+def get_message(name, message):
+    return f'Твоё имя:{name}\nСообщение для тебя:{message}!'
+
+print(get_message(name="Вася", message="привет!"))
+print(get_message(**message_dict))
+
+
+message = 'привет!'
+print_config = {
+    'sep': '---',
+    'end': '\n\n',
+}
+
+print(message, **print_config)
