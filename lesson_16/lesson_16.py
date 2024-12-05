@@ -34,43 +34,6 @@ Python функции: args, kwargs. Модули и файлы. Упаковк�
     - Финальная сборка в exe
 """
 
-# *args - произвольное число позиционных аргументов
-products = ['яблоко', 'банан', 'апельсин']
-
-apple, *_ = products
-print(apple)# яблоко
-print(_) # ['банан', 'апельсин']
-
-
-def get_products(*args):
-    print(args)
-    print(type(args))
-    [print(item) for item in args]
-
-get_products('яблоко')
-get_products(*products)
-get_products(products[0], products[1], products[2])
-
-# Проверка на палиндром
-def is_palindrome(*words:str) -> dict:
-    """
-    Функция проверки слова на палиндром
-    :param word: str - слово для проверки
-    """
-    result = {}
-    for word in words:
-        raw_word = word.lower().replace(' ', '')
-        result[word] = raw_word == raw_word[::-1]
-
-    return result
-
-result = is_palindrome("шалаш", "топот", "дед", "мадам", "а роза упала на лапу азора")
-
-print(result)
-
-words = ["шалаш", "топот", "дед", "мадам", "а роза упала на лапу азора"]
-
-print(is_palindrome(*words))
 
 # **kwargs - произвольное число именованных аргументов
 
@@ -82,14 +45,71 @@ message_dict = {
 def get_message(name, message):
     return f'Твоё имя:{name}\nСообщение для тебя:{message}!'
 
-print(get_message(name="Вася", message="привет!"))
-print(get_message(**message_dict))
+def get_message_2(**kwargs):
+    name = kwargs.get('name')
+    message = kwargs.get('message')
 
+    message = f'Твоё имя:{name}\nСообщение для тебя:{message}!'
+    return (message)
 
-message = 'привет!'
-print_config = {
-    'sep': '---',
-    'end': '\n\n',
+# print(get_message(name="Вася", message="привет!"))
+# print(get_message(**message_dict))
+# get_message_2(**message_dict)
+print(get_message_2(name="Вася", message="привет!"))
+
+# Функция со всеми типами аргументов
+def get_message_3(name, message, age=18, *args, **kwargs):
+    print(name)
+    print(message)
+    print(age)
+    print(args)
+    print(kwargs)
+    
+
+# Вызов
+get_message_3('Вася', 'привет!', 16, 30, last_name='Иванов')
+
+# pip install tabulate
+from tabulate import tabulate
+
+group = [
+    ['Имя', 'Возраст', 'Рост'],
+    ['Вася', 16, 180],
+    ['Таня', 17, 165],
+    ['Женя', 18, 175],
+    ['Нина', 15, 160],
+]
+
+# Выводим на экран
+print(tabulate(group, headers='firstrow', tablefmt='fancy_grid'))
+
+#PRACTICE - функция для вывода таблицы
+"""
+Опишите функцию, которая будет принимать:
+1. Аргументы:
+    - data: list[list[str]] - список списков с данными
+    - **params:
+        - headers: list[str] - заголовки столбцов
+        - tablefmt: str - стиль таблицы
+2. Возвращает:
+    - str - таблица в виде строки
+
+Используйте внутри функции проверку на наличие ключей
+headers и tablefmt в словаре params
+если нет первого, укажите  headers='firstrow'
+если нет второго, возьмите стиль 'grid'
+
+Вызовите функцию с проверочным набором.
+
+group = [
+    ['Имя', 'Возраст', 'Рост'],
+    ['Вася', 16, 180],
+    ['Таня', 17, 165],
+    ['Женя', 18, 175],
+    ['Нина', 15, 160],
+]
+
+table_params = {
+    'tablefmt': 'fancy_grid',
 }
-
-print(message, **print_config)
+"""
