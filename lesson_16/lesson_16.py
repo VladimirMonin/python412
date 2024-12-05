@@ -34,56 +34,23 @@ Python функции: args, kwargs. Модули и файлы. Упаковк�
     - Финальная сборка в exe
 """
 
-
 # **kwargs - произвольное число именованных аргументов
-
-message_dict = {
-    "name": "Вася",
-    "message": "привет!",
-}
-
-def get_message(name, message):
-    return f'Твоё имя:{name}\nСообщение для тебя:{message}!'
-
-def get_message_2(**kwargs):
-    name = kwargs.get('name')
-    message = kwargs.get('message')
-
-    message = f'Твоё имя:{name}\nСообщение для тебя:{message}!'
-    return (message)
-
-# print(get_message(name="Вася", message="привет!"))
-# print(get_message(**message_dict))
-# get_message_2(**message_dict)
-print(get_message_2(name="Вася", message="привет!"))
-
-# Функция со всеми типами аргументов
-def get_message_3(name, message, age=18, *args, **kwargs):
-    print(name)
-    print(message)
-    print(age)
-    print(args)
-    print(kwargs)
-    
-
-# Вызов
-get_message_3('Вася', 'привет!', 16, 30, last_name='Иванов')
 
 # pip install tabulate
 from tabulate import tabulate
 
 group = [
-    ['Имя', 'Возраст', 'Рост'],
-    ['Вася', 16, 180],
-    ['Таня', 17, 165],
-    ['Женя', 18, 175],
-    ['Нина', 15, 160],
+    ["Имя", "Возраст", "Рост"],
+    ["Вася", 16, 180],
+    ["Таня", 17, 165],
+    ["Женя", 18, 175],
+    ["Нина", 15, 160],
 ]
 
 # Выводим на экран
-print(tabulate(group, headers='firstrow', tablefmt='fancy_grid'))
+print(tabulate(group, headers="firstrow", tablefmt="fancy_grid"))
 
-#PRACTICE - функция для вывода таблицы
+# PRACTICE - функция для вывода таблицы
 """
 Опишите функцию, которая будет принимать:
 1. Аргументы:
@@ -113,3 +80,26 @@ table_params = {
     'tablefmt': 'fancy_grid',
 }
 """
+table_params = {
+    'tablefmt': 'html',
+}
+
+
+def get_table_by_list(data: list[list[str]], **params) -> str:
+    """
+    Функция для вывода таблицы из списка списков
+    :param data: list[list[str]] - список списков с данными
+    :param **params:
+        - headers: list[str] - заголовки столбцов
+        - tablefmt: str - стиль таблицы
+    :return: str - таблица в виде строки
+    """
+    headers = params.get("headers", "firstrow")
+    tablefmt = params.get("tablefmt", "grid")
+
+    result = tabulate(data, headers=headers, tablefmt=tablefmt)
+
+    return result
+
+
+print(get_table_by_list(group, **table_params))
