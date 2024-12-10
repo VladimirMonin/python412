@@ -55,9 +55,9 @@ Python: Работа с файлами TXT JSON конфигурация при�
 # ../ - родительская директория
 # ../data/lesson_17_test.txt
 
-TXT_FILE = r'./lesson_17/lesson_17_test.txt'
+# TXT_FILE = r'./lesson_17/lesson_17_test.txt'
 
-file = open(TXT_FILE, 'r', encoding='utf-8')
+# file = open(TXT_FILE, 'r', encoding='utf-8')
 
 
 # Если мы пытаемся открыть то чего нет. FileNotFoundError: [Errno 2] No such file or directory: 'lesson_17_test.txt'
@@ -74,16 +74,16 @@ file = open(TXT_FILE, 'r', encoding='utf-8')
 # read() - читает весь файл и возвращает строку
 
 # Протестируем readline()
-line1 = file.readline()
-line2 = file.readline()
-line3 = file.readline()
-line4 = file.readline()
-line5 = file.readline()
+# line1 = file.readline()
+# line2 = file.readline()
+# line3 = file.readline()
+# line4 = file.readline()
+# line5 = file.readline()
 
-lines = [line1, line2, line3, line4, line5]
-print(lines)
+# lines = [line1, line2, line3, line4, line5]
+# print(lines)
 
-file.close()
+# file.close()
 
 # Запись в файл
 # Если файла нет, он будет создан
@@ -95,9 +95,9 @@ file.close()
 # file.close()
 
 # Добавление в файл
-file = open(TXT_FILE, 'a', encoding='utf-8')
-# Записываем в файл
-file.write('Hello world!')
+# file = open(TXT_FILE, 'a', encoding='utf-8')
+# # Записываем в файл
+# file.write('Hello world!')
 
 #PRACTICE 2 функции чтение и запись(дозапись) в файл
 """
@@ -112,3 +112,39 @@ file.write('Hello world!')
 
 Документация и аннотация типов приветствуется :)
 """
+
+def read_file(file_path: str, encoding: str = 'utf-8') -> str:
+    """
+    Читает содержимое текстового файла и возвращает его в виде строки.
+    Args:
+        file_path (str): Путь к файлу для чтения
+        encoding (str, optional): Кодировка файла. По умолчанию 'utf-8'
+    """
+    file = open(file_path, 'r', encoding=encoding)
+    text = file.read()
+    file.close()
+    return text
+
+
+def write_file(file_path: str, text: str, encoding: str = 'utf-8', mode: str = 'w') -> None:
+    """
+    Записывает текст в файл. Автоматически добавляет перенос строки в конце.
+    Флаг по умолчанию - 'w'
+    Args:
+        file_path (str): Путь к файлу для записи
+        text (str): Текст для записи в файл
+        encoding (str, optional): Кодировка файла. По умолчанию 'utf-8'
+        mode (str, optional): Режим открытия файла ('w' - перезапись, 'a' - дозапись). По умолчанию 'w'
+    """
+    file = open(file_path, mode, encoding=encoding)
+    file.write(text + '\n')
+    file.close()
+
+
+# Тестируем
+# Запись в файл
+TXT_FILE = r'./lesson_17/lesson_17_test.txt'
+write_file(TXT_FILE, 'Тест функции', mode='a')
+# Чтение из файла
+text = read_file(TXT_FILE)
+print(text)
