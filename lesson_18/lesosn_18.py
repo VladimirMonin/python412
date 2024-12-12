@@ -8,6 +8,7 @@ Python: CSV и YAML форматы. Конфигурация приложени�
 
 1. YAML конфигурация:
     - Установка и импорт PyYAML
+    - pip install py
     - Синтаксис YAML файлов
     - Методы load() и dump()
     - Преимущества над JSON
@@ -38,3 +39,54 @@ Python: CSV и YAML форматы. Конфигурация приложени�
     - Создание YAML конфига
     - Сборка финального приложения
 """
+
+# PyYAML - библиотека для работы c YAML
+# pip install pyyaml
+
+import yaml
+
+# Список покупок
+shopping_list = [
+    {
+        "name": "Молоко",
+        "quantity": 2,
+        "unit": "литра",
+        "category": "Молочные продукты",
+        "priority": "высокая",
+    },
+    {
+        "name": "Хлеб",
+        "quantity": 1,
+        "unit": "буханка",
+        "category": "Хлебобулочные изделия",
+        "priority": "средняя",
+    },
+    {
+        "name": "Яблоки",
+        "quantity": 1.5,
+        "unit": "кг",
+        "category": "Фрукты",
+        "priority": "низкая",
+    },
+]
+
+shop_list = ["молоко", "кефир", "бананы"]
+
+# Методы yaml
+
+# yaml.dump() - запись данных в YAML файл
+# yaml.load() - чтение данных из YAML файла
+
+yaml_string = yaml.dump(shop_list, allow_unicode=True)
+print(yaml_string)
+
+# Читаем config.yaml и печатаем его
+with open("lesson_18\config.yaml", "r", encoding="utf-8") as file:
+    yaml_data = yaml.load(file, Loader=yaml.Loader)
+    print(yaml_data)
+
+
+CITY = yaml_data["city"]
+TIMEOUT = yaml_data["timeout"]
+
+print(CITY, TIMEOUT)
