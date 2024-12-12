@@ -85,9 +85,98 @@ table_dict = [
     {"first_name": "Дмитрий", "middle_name": "Вячеславович", "last_name": "Юдин"}
 ]
 
-# Запись в CSV файл списка списков для Excel
-with open("table_list.csv", "w", encoding="utf-8-sig") as file:
-    writer = csv.writer(file, delimiter=";", lineterminator="\n")
-    writer.writerows(table_list)
+# # Запись в CSV файл списка списков для Excel
+# with open("table_list.csv", "w", encoding="utf-8-sig") as file:
+#     writer = csv.writer(file, delimiter=";", lineterminator="\n")
+#     writer.writerows(table_list)
 
-# utf-8-sig - специальный кодировочный формат для Excel и продуктов Microsoft
+# # utf-8-sig - специальный кодировочный формат для Excel и продуктов Microsoft
+
+# # Чтение CSV файла
+# with open("table_list.csv", "r", encoding="utf-8-sig") as file:
+#     reader = csv.reader(file, delimiter=";")
+#     table_list = list(reader)
+
+
+# print(table_list)
+
+# # Считаем как список словарей
+# with open("table_list.csv", "r", encoding="utf-8-sig") as file:
+#     reader = csv.DictReader(file, delimiter=";")
+#     table_dict = list(reader)
+
+# print(table_dict)
+
+new_student = {
+    "first_name": "Анатолий",
+    "middle_name": "Андреевич",
+    "last_name": "Андреев",
+}
+
+new_student_list = [
+    "Анатолий",
+    "Андреевич",
+    "Андреев",
+]
+
+# # Дозапись в CSV файл списка
+# with open("table_list.csv", "a", encoding="utf-8-sig") as file:
+#     writer = csv.writer(file, delimiter=";", lineterminator="\n")
+#     writer.writerow(new_student_list)
+
+
+# Дозапись в CSV файл словаря
+# fildnames - список названий столбцов
+with open("table_list.csv", "a", encoding="utf-8-sig") as file:
+    writer = csv.DictWriter(
+        file, fieldnames=new_student.keys(), delimiter=";", lineterminator="\n"
+    )
+    writer.writerow(new_student)
+
+    
+"""
+CSV reader и writer
+CSV Reader и Writer - это классы из модуля csv для работы с CSV файлами.
+
+CSV Reader (csv.reader):
+- Создает объект для чтения CSV файлов
+- Основные параметры:
+  * delimiter - разделитель полей (по умолчанию ',')
+  * lineterminator - символ конца строки (по умолчанию '\r\n')
+  * encoding - кодировка файла (utf-8, utf-8-sig для Excel)
+- Методы:
+  * next() - читает следующую строку
+  * list(reader) - преобразует весь файл в список списков
+
+CSV Writer (csv.writer): 
+- Создает объект для записи в CSV файлы
+- Основные параметры:
+  * delimiter - разделитель полей
+  * lineterminator - символ конца строки
+
+- Методы:
+  * writerow() - записывает одну строку
+  * writerows() - записывает несколько строк
+
+Работа со списками:
+- Списки списков напрямую записываются через writerows()
+- При чтении получаем список списков
+- Каждая строка CSV = список значений
+
+Работа со словарями:
+- Для словарей используются DictReader и DictWriter
+- DictReader создает словари с заголовками как ключами
+- DictWriter требует указания fieldnames (заголовков столбцов)
+- Позволяет работать с именованными полями вместо индексов
+
+Пример с DictWriter:
+writer = csv.DictWriter(file, fieldnames=['first_name', 'middle_name', 'last_name'])
+writer.writeheader() # записывает заголовки
+writer.writerows(table_dict) # записывает данные
+
+Пример с DictReader:
+reader = csv.DictReader(file)
+for row in reader:
+    print(row['first_name']) # обращение по имени поля
+
+"""
