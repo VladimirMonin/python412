@@ -1,0 +1,5 @@
+COMPRESS_PERCENT: 50
+ALLOWED_EXTENSIONS:
+  - jpg
+  - png
+  - jpeg

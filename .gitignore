@@ -3,8 +3,8 @@
 __pycache__/
 *.zip
 hw/cities.py
-lesson_15/weather_utlis.spec
-lesson_15/build/
-lesson_15/dist/
+*.spec
+*build/
+*dist/
 lesson_17/lesson_17_test.txt
 table_list.csv

@@ -7,9 +7,24 @@ pip install pillow
 # Импорт
 from PIL import Image  # pip install pillow
 import os  # встроенный в пайтон модуль для работы с ОС
+import yaml
 
-ALLOWED_EXTENSIONS = ["jpg", "jpeg", "png"]
-COMPRESS_PERCENT = 50
+# pyinstaller --onefile main.py\
+# Функция для загрузки конфига. Возвращает словарь
+
+
+def get_yaml_config(config_path: str = "") -> dict:
+    """
+    Функция для загрузки конфига. Возвращает словарь
+    """
+    with open(config_path, "r") as config_file:
+        config = yaml.load(config_file, Loader=yaml.FullLoader)
+    return config
+
+config = get_yaml_config("config.yaml")
+
+ALLOWED_EXTENSIONS = config["ALLOWED_EXTENSIONS"]
+COMPRESS_PERCENT = config["COMPRESS_PERCENT"]
 
 
 def get_path_to_file():
