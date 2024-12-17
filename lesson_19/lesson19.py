@@ -56,3 +56,52 @@ my_print("Hello", "World", sep=" ")
 
 new_nums_list = my_map(add_one, nums_list)
 print(new_nums_list)
+
+some_str = "компьютер"
+# some_str()  # TypeError: 'str' object is not callable
+
+# map, filter, sorted
+
+names_list = names = [
+    "Владимир",
+    "Семен",
+    "Дмитрий",
+    "Иван",
+    "Никита",
+    "Спартак",
+    "Артём",
+    "Рашид",
+    "Григорий",
+    "Вадим",
+    "Андрей",
+    "Размик",
+    "Алексей",
+    "Даниил",
+    "Павел",
+    "Кирилл",
+    "Дмитрий",
+    "Екатерина"
+]
+
+list_lenght_names = [len(name) for name in names_list]
+list_lenght_names = list(map(len, names_list))
+print(list_lenght_names)
+
+
+# users_nums = list(map(int, input("Введите числа через пробел: ").split()))
+# print(users_nums)
+
+
+list_upper_names = list(map(str.upper, names_list))
+
+
+def upper_name(name: str):
+    """
+    Функция принимает имя и возвращает его в верхнем регистре
+    :param name: Строка с именем
+    """
+    return name.upper()
+
+
+list_upper_names = list(map(upper_name, names_list))
+print(list_upper_names)
