@@ -33,6 +33,7 @@ nums_list = [1, 2, 3, 4, 5]
 
 new_nums_list = [num + 1 for num in nums_list]  # 2, 3, 4, 5, 6
 
+
 def add_one(num):
     return num + 1
 
@@ -41,13 +42,14 @@ new_nums_list = [add_one(num) for num in nums_list]
 
 nums_list = [1, 2, 3, 4, 5]
 
+
 def my_map(func, nums_list: list) -> list:
-    
+
     result = []
 
     for num in nums_list:
         result.append(func(num))
-    
+
     return result
 
 
@@ -80,7 +82,7 @@ names_list = names = [
     "Павел",
     "Кирилл",
     "Дмитрий",
-    "Екатерина"
+    "Екатерина",
 ]
 
 list_lenght_names = [len(name) for name in names_list]
@@ -120,6 +122,7 @@ lambda а, б: а + б
 def my_sum(a, b):
     return a + b
 
+
 my_sum = lambda a, b: a + b
 
 
@@ -129,19 +132,51 @@ new_nums_list = list(map(lambda num: num * 2, nums_list))
 
 from cities import cities_list
 
-populations_list = list(map(lambda city: city['population'] ,cities_list))
+populations_list = list(map(lambda city: city["population"], cities_list))
 
-populations_list = list(map(lambda city: round(city['population'], -3) ,cities_list))
+populations_list = list(map(lambda city: round(city["population"], -3), cities_list))
 
 # Получим список цифр популяции городов, и округлим числа  до тысяч
-populations_list = list(map(lambda city: round(city['population'], -3) ,cities_list))
+populations_list = list(map(lambda city: round(city["population"], -3), cities_list))
 
 # Тернарный if.  Утверждение ЕСЛИ условие, ИНАЧЕ альтернатива
 
 # Получим список цифр популяции городов, и округлим числа  до тысяч ЕСЛИ это число, иначе оставим None
-populations_list = list(map(lambda city: round(city['population'], -3) if isinstance(city['population'], int) else None, cities_list))
-
-
-
+populations_list = list(
+    map(
+        lambda city: (
+            round(city["population"], -3)
+            if isinstance(city["population"], int)
+            else None
+        ),
+        cities_list,
+    )
+)
 
 print(populations_list)
+
+"""
+Хочу получить список таких словарей
+{ "name": "Абакан",
+    "population": 18000,}  Популяция округлена
+"""
+
+populations_list = list(
+    map(
+        lambda city: {
+            "name": city["name"],
+            "population": round(city["population"], -3),
+        },
+        cities_list,
+    )
+)
+
+from pprint import pprint
+
+# pprint(populations_list[:50])
+
+# sort и sorted
+"""
+sort - метод списка, который сортирует список по возрастанию
+sorted - функция, которая возвращает новый отсортированный список
+"""
