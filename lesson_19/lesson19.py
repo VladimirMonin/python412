@@ -4,19 +4,19 @@
 
 Python: Функции высшего порядка и анонимные функции
 
-1. Функции высшего порядка:
+1. Функции высшего порядка: +
     - Концепция функций как объектов первого класса
     - Передача функций как аргументов
     - Возврат функций из функций
     - Практические примеры применения
 
 2. Встроенные функции высшего порядка:
-    - map() - преобразование элементов
-    - filter() - фильтрация по условию
-    - sorted() с key функцией
-    - all() и any() для проверки условий
+    - map() - преобразование элементов +
+    - filter() - фильтрация по условию +
+    - sorted() с key функцией +
+    - all() и any() для проверки условий -
 
-3. Анонимные функции (lambda):
+3. Анонимные функции (lambda): +
     - Синтаксис lambda выражений
     - Применение с map() и filter()
     - Ограничения lambda функций
@@ -165,7 +165,7 @@ populations_list = list(
     map(
         lambda city: {
             "name": city["name"],
-            "population": round(city["population"], -3),
+            "population": round(city["population"]),
         },
         cities_list,
     )
@@ -179,4 +179,59 @@ from pprint import pprint
 """
 sort - метод списка, который сортирует список по возрастанию
 sorted - функция, которая возвращает новый отсортированный список
+
+
+[{'name': 'Абаза', 'population': 15000},
+ {'name': 'Абакан', 'population': 187000},
+ {'name': 'Абдулино', 'population': 18000},
+ {'name': 'Абинск', 'population': 39000},
+
+Попробуем это сортировать 2 способами
+"""
+
+# Используем метод sort
+# populations_list.sort(key=lambda city: city["population"])
+
+# Используем функцию sorted
+populations_list = sorted(
+    populations_list, key=lambda city: city["population"])
+
+pprint(populations_list[:-6:-1])
+pprint(populations_list[:5])
+
+
+# Сортировка по 2м признакам
+# Будем сортировать исходный cities_list по 
+#  "subject": 
+# "population": 
+
+sorted_cities_list = sorted(
+    cities_list,
+    key=lambda city: (
+        city["subject"],
+        city["population"],
+    ))
+
+pprint(sorted_cities_list[:50])
+
+
+# Filter
+# filter(func, iterable)
+
+# Найдем города которые более 1000000 человек
+big_cities = list(filter(lambda city: city["population"] > 1000000, cities_list))
+pprint(big_cities[:5])
+
+# Списковое выражение
+big_cities = [city for city in cities_list if city["population"] > 1000000]
+
+pprint(big_cities[:5])
+
+# PRACTICE Поисковик городов по субъекту
+"""
+1. Пользователь вводит субъект РФ
+2. Мы проверяем что он есть в коллекции
+3. Мы фильтруем коллекцию через filter или list comprehension
+4. Выводим все города субьекта
+* Можете отсортировать их по населению (по убыванию)
 """
