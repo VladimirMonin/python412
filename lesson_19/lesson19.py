@@ -105,3 +105,43 @@ def upper_name(name: str):
 
 list_upper_names = list(map(upper_name, names_list))
 print(list_upper_names)
+
+"""
+lambda - анонимная функция
+lambda а, б: а + б
+
+1. Нет имени
+2. Нет def
+3. Нет return (происходит автоматически)
+4. Нет возможности дать сложный цикл или ветвление, в связи с однострочностью.
+"""
+
+
+def my_sum(a, b):
+    return a + b
+
+my_sum = lambda a, b: a + b
+
+
+nums_list = [1, 2, 3, 4, 5]
+# Обойдем через map и умножим на 2
+new_nums_list = list(map(lambda num: num * 2, nums_list))
+
+from cities import cities_list
+
+populations_list = list(map(lambda city: city['population'] ,cities_list))
+
+populations_list = list(map(lambda city: round(city['population'], -3) ,cities_list))
+
+# Получим список цифр популяции городов, и округлим числа  до тысяч
+populations_list = list(map(lambda city: round(city['population'], -3) ,cities_list))
+
+# Тернарный if.  Утверждение ЕСЛИ условие, ИНАЧЕ альтернатива
+
+# Получим список цифр популяции городов, и округлим числа  до тысяч ЕСЛИ это число, иначе оставим None
+populations_list = list(map(lambda city: round(city['population'], -3) if isinstance(city['population'], int) else None, cities_list))
+
+
+
+
+print(populations_list)
