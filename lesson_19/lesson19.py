@@ -235,3 +235,19 @@ pprint(big_cities[:5])
 4. Выводим все города субьекта
 * Можете отсортировать их по населению (по убыванию)
 """
+
+print("Поисковик городов по субъекту")
+
+user_subject = input("Введите субъект РФ: ")
+
+if user_subject in {city["subject"] for city in cities_list}:
+    
+    filtered_cities = [city for city in cities_list if city["subject"] == user_subject]
+    
+    sorted_cities = sorted(
+        filtered_cities, key=lambda city: city["population"], reverse=True
+    )
+    pprint(sorted_cities)
+
+else:
+    print("Такого субъекта нет")
