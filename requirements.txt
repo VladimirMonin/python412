@@ -1,3 +1,7 @@
 plyer
 requests
 pyinstaller
+tabulate
+mypy
+PyYAML
+plyer

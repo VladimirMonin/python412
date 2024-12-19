@@ -49,8 +49,6 @@ all_nums = all(map(str.isdigit, nums_list))  # True
 # Создание генераторного выражения
 all_nums = all(num.isdigit() for num in nums_list)
 
-
-from math import pi
 from cities import cities_list
 
 # Проверим, что в наборе есть город с населением более 10000000
@@ -181,3 +179,40 @@ def read_file_line_by_line(file_path):
 
 for line in read_file_line_by_line(file):
     print(line)
+
+from typing import List, Dict, Tuple, Union, Optional, Any, Iterable, Callable
+
+"""
+Расширенные аннотации типов (Type Hints)
+Union - объединение типов (или)
+Optional - тип может быть None или чем-то другим одним
+Any - в душе без понятия что это? Может быть любой тип
+Iterable - тип, который можно итерировать
+Callable - тип, который можно вызвать
+
+Set[str] - множество строк
+Dict[str, Union[None, int]] - словарь с ключами типа int и значениями типа или int или None
+Dict[int, Dict[str, Union[None, int, str]]] - словарь с ключами типа int и значениями типа словарь с ключами типа str и значениями типа или int или None или str
+
+Callable[[int, str], int] - функция с двумя аргументами типа int и str и возвращает значение типа int
+"""
+
+
+def get_square(num: int) -> int:
+    return num**2
+
+
+nums = [1, 2, 3, 4, "5"]
+
+for num in nums:
+    print(get_square(num))
+
+
+def get_square2(*num: int) -> List[int]:
+    return [num**2 for num in num]
+
+
+get_square2(*nums)
+
+# pip install mypy
+# mypy lesson_20.py
