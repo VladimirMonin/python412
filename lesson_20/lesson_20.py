@@ -158,9 +158,26 @@ cities_generator = (f'Город: {city["name"]}, население: {city["pop
 
 
 
-for city in cities_generator:
-    print(city)
-    user_answer = input("Хотите продолжить? (y/n): ")
-    if user_answer.lower() == "n":
-        print("До свидания!")
-        break
+# for city in cities_generator:
+#     print(city)
+#     user_answer = input("Хотите продолжить? (y/n): ")
+#     if user_answer.lower() == "n":
+#         print("До свидания!")
+#         break
+
+
+"""
+Попробуем написать генератор для чтения txt файла построчно
+"""
+file = "./lesson_20/lesson_20.txt"
+
+def read_file_line_by_line(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        file = file
+        for line in file:
+            yield line.strip()
+
+
+
+for line in read_file_line_by_line(file):
+    print(line)
