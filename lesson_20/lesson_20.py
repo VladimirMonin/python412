@@ -123,9 +123,42 @@ def cities_by_population(min_population: int):
             yield f'Город: {city["name"]}, население: {city["population"]}'
 
 
-user_num = int(input("Введите минимальное население: "))
+# user_num = int(input("Введите минимальное население: "))
 
-for city in cities_by_population(user_num):
+# for city in cities_by_population(user_num):
+#     print(city)
+#     user_answer = input("Хотите продолжить? (y/n): ")
+#     if user_answer.lower() == "n":
+#         print("До свидания!")
+#         break
+
+
+# Вспомним какие у нас есть однострочники?
+
+# Выражение списка (list comprehension)
+cities_names = [city["name"] for city in cities_list]
+print(cities_names)
+# Выражение множества (set comprehension)
+cities_names = {city["name"] for city in cities_list}
+print(cities_names)
+# Выражение словаря (dict comprehension)
+cities_names = {city["name"]: city["population"] for city in cities_list}
+print(cities_names)
+
+# Генераторное выражение (generator expression)
+cities_names = (city["name"] for city in cities_list)
+
+
+
+min_population = 1_000_000
+# Генераторное выражение
+cities_generator = (city["name"] for city in cities_list if city["population"] > min_population)
+
+cities_generator = (f'Город: {city["name"]}, население: {city["population"]}' for city in cities_list if city["population"] > min_population)
+
+
+
+for city in cities_generator:
     print(city)
     user_answer = input("Хотите продолжить? (y/n): ")
     if user_answer.lower() == "n":
