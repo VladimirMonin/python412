@@ -6,7 +6,7 @@
 # 1. Импорт cities.py
 
 
-from lesson_19.cities import cities_list
+from lesson_20.cities import cities_list
 
 # 2. Мы можем перепаковать города в сет
 
