@@ -213,9 +213,43 @@ variants = [
 
 # Логика создания всех вариантов пословиц:
 
-result = []
+# result = []
 
-for proverb in proverbs:
-    for variant in variants:
-        new_proverb = proverb.lower().replace("ум", variant).capitalize()
-        result.append(new_proverb)
+# for proverb in proverbs:
+#     for variant in variants:
+#         new_proverb = proverb.lower().replace("ум", variant).capitalize()
+#         result.append(new_proverb)
+
+from random import shuffle
+
+def cached_proverbs_generator(proverbs: List[str], variants: List[str]) -> Callable[[], List[str]]:
+    cache = []
+    max_variant = 0
+    
+    def inner() -> List[str]:
+        nonlocal cache, max_variant
+        # Проверяем изменился ли список
+        if max_variant == len(proverbs) * len(variants) and cache:
+            print("Кеш")
+            shuffle(cache)
+            return cache
+
+        # Если список изменился, обновляем кеш
+        cache = []
+        for proverb in proverbs:
+            for variant in variants:
+                new_proverb = proverb.lower().replace("ум", variant).capitalize()
+                cache.append(new_proverb)
+        max_variant = len(proverbs) * len(variants)
+        print("Вычисление")
+        shuffle(cache)
+        return cache
+    
+    return inner
+
+
+proverbs_generator = cached_proverbs_generator(proverbs, variants)
+print(proverbs_generator()[:5])
+print(proverbs_generator()[:5])
+print(proverbs_generator()[:5])
+print(proverbs_generator()[:5])
