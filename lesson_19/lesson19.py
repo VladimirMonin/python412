@@ -130,7 +130,7 @@ nums_list = [1, 2, 3, 4, 5]
 # Обойдем через map и умножим на 2
 new_nums_list = list(map(lambda num: num * 2, nums_list))
 
-from lesson_20.cities import cities_list
+from data.cities import cities_list
 
 populations_list = list(map(lambda city: city["population"], cities_list))
 

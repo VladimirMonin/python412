@@ -49,7 +49,7 @@ all_nums = all(map(str.isdigit, nums_list))  # True
 # Создание генераторного выражения
 all_nums = all(num.isdigit() for num in nums_list)
 
-from cities import cities_list
+from data.cities import cities_list
 
 # Проверим, что в наборе есть город с населением более 10000000
 
