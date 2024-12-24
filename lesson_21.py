@@ -161,52 +161,52 @@ proverbs = [
 ]
 
 variants = [
-    'кот',
-    'шеф',
-    'мозг',
-    'лес',
-    'фолк',
-    'код',
-    'рот',
-    'мёд',
-    'лук',
-    'лес',
-    'год',
-    'час',
-    'друг',
-    'муж',
-    'айфон',
-    'стол',
-    'нос',
-    'сыр',
-    'хлеб',
-    'мир',
-    'свет',
-    'рок',
-    'дед',
-    'дом',
-    'сон',
-    'глаз',
-    'торт', 
-    'драйв', 
-    'байк', 
-    'джаз', 
-    'грим', 
-    'рэп', 
-    'старт', 
-    'пинг-понг', 
-    'каприз', 
-    'драйф', 
-    'размах', 
-    'панк', 
-    'размер', 
-    'перекус', 
-    'блеск', 
-    'накал', 
-    'размен', 
-    'кураж', 
-    'форсаж', 
-    'прорыв'
+    "кот",
+    "шеф",
+    "мозг",
+    "лес",
+    "фолк",
+    "код",
+    "рот",
+    "мёд",
+    "лук",
+    "лес",
+    "год",
+    "час",
+    "друг",
+    "муж",
+    "айфон",
+    "стол",
+    "нос",
+    "сыр",
+    "хлеб",
+    "мир",
+    "свет",
+    "рок",
+    "дед",
+    "дом",
+    "сон",
+    "глаз",
+    "торт",
+    "драйв",
+    "байк",
+    "джаз",
+    "грим",
+    "рэп",
+    "старт",
+    "пинг-понг",
+    "каприз",
+    "драйф",
+    "размах",
+    "панк",
+    "размер",
+    "перекус",
+    "блеск",
+    "накал",
+    "размен",
+    "кураж",
+    "форсаж",
+    "прорыв",
 ]
 
 # PRACTICE - Функция генератор пословиц с кешированием
@@ -222,10 +222,13 @@ variants = [
 
 from random import shuffle
 
-def cached_proverbs_generator(proverbs: List[str], variants: List[str]) -> Callable[[], List[str]]:
+
+def cached_proverbs_generator(
+    proverbs: List[str], variants: List[str]
+) -> Callable[[], List[str]]:
     cache = []
     max_variant = 0
-    
+
     def inner() -> List[str]:
         nonlocal cache, max_variant
         # Проверяем изменился ли список
@@ -244,7 +247,7 @@ def cached_proverbs_generator(proverbs: List[str], variants: List[str]) -> Calla
         print("Вычисление")
         shuffle(cache)
         return cache
-    
+
     return inner
 
 
@@ -253,3 +256,49 @@ print(proverbs_generator()[:5])
 print(proverbs_generator()[:5])
 print(proverbs_generator()[:5])
 print(proverbs_generator()[:5])
+
+
+from random import choice, shuffle
+from typing import Generator, Set
+
+
+def random_proverb_generator(
+    proverbs: list[str], variants: list[str]
+) -> Generator[str, None, None]:
+    # Храним использованные комбинации
+    used_combinations: Set[tuple] = set()
+    # Максимальное количество возможных комбинаций
+    max_combinations = len(proverbs) * len(variants)
+
+    while True:
+        # Если использовали все комбинации - очищаем историю
+        if len(used_combinations) >= max_combinations:
+            used_combinations.clear()
+
+        # Выбираем случайную пословицу и вариант замены
+        current_proverb = choice(proverbs)
+        current_variant = choice(variants)
+
+        # Создаём уникальный ключ комбинации
+        combination = (current_proverb, current_variant)
+
+        # Если такой комбинации ещё не было
+        if combination not in used_combinations:
+            used_combinations.add(combination)
+            # Генерируем и отдаём новую пословицу
+            yield current_proverb.lower().replace("ум", current_variant).capitalize()
+
+
+# Закажем 5 пословиц
+proverb_gen = random_proverb_generator(proverbs, variants)
+for _ in range(5):
+    print(next(proverb_gen))
+
+
+reuslt = []
+for proverb in proverb_gen:
+    reuslt.append(proverb)
+    if len(reuslt) == 5:
+        break
+
+print(reuslt)
