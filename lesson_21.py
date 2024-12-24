@@ -11,20 +11,34 @@
 # 2. Локальная область видимости
 # 3. Нелокальная область видимости
 
-a = 1
-
-def my_func2():
-    a = 2  # Локальная область видимости функции my_func2
-    print(f"Переменная {a=} в функции my_func2 до inner_func")
-
-    def inner_func():
-        # nonlocal a
-        a = 3  # Локальная область видимости функции inner_func
-        print(f'Переменная {a=} в функции inner_func')
-
-    inner_func()
-    print(f"Переменная {a=} в функции my_func2 после inner_func")
+# Функция счётчик которая хранит состояние
+from typing import Callable
+"""
+Callable - это аннотация типа, которая позволяет указать, что что возвращается является вызываемым объектом.
+[[аргумент_a, аргумент_b], возвращаемый тип данных]
+"""
 
 
-my_func2()
-print(f"Переменная {a=} в глобальной области видимости")
+
+def counter()-> Callable[[], int]:
+    
+    count = 0
+    print(f"{id(count)=}")
+    
+    def inner() -> int:
+        nonlocal count
+        count += 1
+        return count
+    
+    return inner
+
+counter1 = counter()
+print(id(counter1)) # 140707366366784
+counter2 = counter()
+print(id(counter2)) # 140707366366848
+print(counter1()) # 1
+print(counter1()) # 2
+print(counter1()) # 3
+
+print(counter2())  # 1
+print(counter2())  # 2
