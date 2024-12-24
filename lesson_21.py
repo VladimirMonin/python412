@@ -302,3 +302,35 @@ for proverb in proverb_gen:
         break
 
 print(reuslt)
+
+
+# Замыкания и первый простой декоратор
+
+def simple_func():
+    print("Принт простой функции")
+
+
+def simple_decorator(func):
+    def inner():
+        print("Принт до вызова функции")
+        func()
+        print("Принт после вызова функции")
+
+    return inner
+
+decorated_func = simple_decorator(simple_func)
+decorated_func()
+
+# Принт до вызова функции
+# Принт простой функции
+# Принт после вызова функции
+
+@simple_decorator
+def simple_func2():
+    print("Принт простой функции")
+
+simple_func2()
+
+# Принт до вызова функции
+# Принт простой функции
+# Принт после вызова функции
