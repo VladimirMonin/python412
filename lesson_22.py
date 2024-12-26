@@ -132,3 +132,40 @@ print(c1())
 
 print(c2())
 print(c2())
+
+# Подобие декоратора - принт декоратор
+
+def print_msg():
+    print('Послали сообщение')
+
+def print_decorator(func: Callable):
+    func = func
+    def wrapper():
+        print('Декорируем функцию')
+        func()
+        print('Функция декорирована')
+
+    return wrapper
+
+
+# Как бы выглядела декорация если бы не было синатксического сахара в виде @
+
+# decorated_func = print_decorator(print_msg)
+# decorated_func()
+
+# Декораторирование "с собачкой"
+
+# @print_decorator
+# def print_msg2():
+#     print("Послали сообщение")
+
+
+# print_msg2()
+
+
+@print_decorator
+def print_msg3(msg: str):
+    print(f"Послали сообщение: {msg}")
+
+
+print_msg3("Привет, мир!")
