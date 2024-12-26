@@ -163,9 +163,63 @@ def print_decorator(func: Callable):
 # print_msg2()
 
 
-@print_decorator
-def print_msg3(msg: str):
+# @print_decorator
+# def print_msg3(msg: str):
+#     print(f"Послали сообщение: {msg}")
+
+
+# print_msg3("Привет, мир!")
+
+
+def print_decorator2(func: Callable):
+    def wrapper(msg: str):
+        print(f"Декорируем функцию с аргументом {msg}")
+        func(msg)
+        print("Функция декорирована")
+
+    return wrapper
+
+@print_decorator2
+def print_msg4(msg: str):
     print(f"Послали сообщение: {msg}")
 
+print_msg4("Привет, мир!")
 
-print_msg3("Привет, мир!")
+
+def print_decorator3(func: Callable):
+    def wrapper(*args, **kwargs):
+        print(f"Декорируем функцию с аргументами {args} и {kwargs}")
+        func(*args, **kwargs)
+        print("Функция декорирована")
+
+    return wrapper
+
+@print_decorator3
+def print_msg5(name: str, msg: str, age:   int = 18):
+    print(f"Послали сообщение: {msg} для {name} {age} лет")
+
+@print_decorator3
+def get_msg(msg: str):
+    return f'Получено сообщение: {msg}'
+
+print_msg5("Валера", "Привет, мир!", 25)
+result_get_msg = get_msg("Привет, мир!")
+print(result_get_msg)
+
+def print_decorator4(func: Callable):
+    def wrapper(*args, **kwargs):
+        print(f"Декорируем функцию с аргументами {args} и {kwargs}")
+        result = func(*args, **kwargs)
+        print("Функция декорирована")
+        
+        return result
+
+    return wrapper
+
+@print_decorator4
+def get_msg2(msg: str):
+    return f'Получено сообщение: {msg}'
+
+
+result_get_msg2 = get_msg2("Привет, мир!")
+print(result_get_msg2)
