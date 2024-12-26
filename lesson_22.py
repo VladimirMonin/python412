@@ -104,7 +104,7 @@ goodbye_b()
 goodbye_v -> say_name2 -> say_goodbye -> name = "Валера" 
 """
 
-from typing import Callable
+from typing import Any, Callable
 
 # Callable - что-то вызываемое (функция)- значит она сама вызываема
 # [[аргумент1, аргумент2], возвращаемое значение]
@@ -223,3 +223,65 @@ def get_msg2(msg: str):
 
 result_get_msg2 = get_msg2("Привет, мир!")
 print(result_get_msg2)
+
+"""
+time.perf_counter() — это функция из модуля time в стандартной библиотеке Python, которая предоставляет доступ к 
+монотонному счётчику времени с наивысшим доступным разрешением для измерения коротких промежутков времени. 
+Вот несколько ключевых моментов об time.perf_counter():
+
+Монотонность: Этот счетчик является монотонным, что означает, что его значения никогда не уменьшаются. 
+Это важно для измерения временных интервалов, так как это гарантирует, что разница между концом и началом 
+интервала всегда будет положительной или нулевой, даже если системные часы изменяются.
+
+Высокое разрешение: Функция предоставляет время с высокой точностью, что делает ее идеальной для замера 
+времени выполнения операций, особенно когда требуется измерить очень короткие промежутки времени.
+
+Независимость от системного времени: Значение, возвращаемое time.perf_counter(), не зависит от системного 
+времени и не подвержено изменениям из-за корректировки часов или перехода на летнее/зимнее время.
+
+Использование: Эта функция часто используется для бенчмаркинга и профилирования кода, поскольку 
+она предоставляет более точные измерения времени, чем time.time() или time.clock().
+
+Платформонезависимость: time.perf_counter() работает на различных платформах, 
+предоставляя стабильный интерфейс для замера времени.
+
+Возвращаемое значение: Функция возвращает время в секундах как число с 
+плавающей точкой. С момента запуска Python (или от момента первого вызова time.perf_counter(), 
+точное определение зависит от реализации) до момента вызова функции.
+
+
+start_time = time.perf_counter()
+finish_time = time.perf_counter()
+"""
+
+from time import perf_counter
+from typing import Any, Callable, Dict, Tuple, List
+from data.cities import cities_list
+
+def timer_decorator(func: Callable)-> Callable:
+    def wrapper(*args: Tuple[Any], **kwargs: Dict[str, Any])   -> Any:
+        start_time = perf_counter()
+        result = func(*args, **kwargs)
+        finish_time = perf_counter()
+        result_time = finish_time - start_time
+        print(f"Время выполнения функции {func.__name__}: {result_time:.10f} секунд")
+        return result
+
+    return wrapper
+
+@timer_decorator
+def get_cities_names(cities: List[Dict[str, Any]]) -> List[str]:
+    return [city["name"] for city in cities]
+
+
+@timer_decorator
+def get_cities_names2(cities: List[Dict[str, Any]]) -> List[str]:
+    cities_names = []
+    for city in cities:
+        cities_names.append(city["name"])
+    return cities_names
+
+# Тестируем!
+
+cities_names2 = get_cities_names2(cities_list)
+cities_names = get_cities_names(cities_list)
