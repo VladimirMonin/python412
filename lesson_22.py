@@ -60,3 +60,29 @@ def three():
 
 
 three()
+
+
+def say_name(name: str):
+    # name - local в пространстве функции say_name
+    def say_goodbye():
+        print(f"{name}, настал твой час!")
+
+    say_goodbye()
+
+say_name("Валера")
+
+# Замыкания
+
+def say_name2(name: str):
+    # name - local в пространстве функции say_name
+    name = name.capitalize()
+    def say_goodbye():
+        print(f"{name}, настал твой час!")
+
+    return say_goodbye
+
+goodbye_v = say_name2("Валера")
+goodbye_b = say_name2("Борис")
+
+goodbye_v()
+goodbye_b()
