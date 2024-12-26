@@ -285,3 +285,34 @@ def get_cities_names2(cities: List[Dict[str, Any]]) -> List[str]:
 
 cities_names2 = get_cities_names2(cities_list)
 cities_names = get_cities_names(cities_list)
+
+
+"""
+Декоратор который работает с функцями
+которые принимают args
+все аргументы должны быть строками и проходить проверку isalpha
+если нет, райзим и НЕ запускаем декорируемую функцию
+"""
+
+def is_alpha_decorator(func: Callable) -> Callable:
+    def wrapper(*args: Tuple[str]) -> Any:
+        # Проверка данных перед вызовом функции
+        for arg in args:
+            if not isinstance(arg, str) or not arg.isalpha():
+                raise ValueError(
+                    "Аргументы должны быть строками и проходить проверку isalpha"
+                )
+            # Тут мы окажемся если проверка прошла успешно
+            result = func(*args)
+        return result
+
+    return wrapper
+
+
+@is_alpha_decorator
+def get_msg(msg: str) -> str:
+    return f"Получено сообщение: {msg}"
+
+
+# print(get_msg("Привет, мир!")) # Не пройдет
+print(get_msg("Привет"))    # Пройдет
