@@ -69,20 +69,66 @@ def say_name(name: str):
 
     say_goodbye()
 
+
 say_name("Валера")
 
 # Замыкания
 
+
 def say_name2(name: str):
     # name - local в пространстве функции say_name
     name = name.capitalize()
+
     def say_goodbye():
         print(f"{name}, настал твой час!")
 
     return say_goodbye
+
 
 goodbye_v = say_name2("Валера")
 goodbye_b = say_name2("Борис")
 
 goodbye_v()
 goodbye_b()
+
+
+"""
+Пока goodbye_v ссылается на функцию say_name2, то она не будет удалена из памяти.
+Соответственно и Валера останется в переменной name.
+
+Почему замыкание?
+
+Мы держим внутренние окружения и "замыкаем" их по цепочке
+Обратившись к goodbye_v
+
+goodbye_v -> say_name2 -> say_goodbye -> name = "Валера" 
+"""
+
+from typing import Callable
+
+# Callable - что-то вызываемое (функция)- значит она сама вызываема
+# [[аргумент1, аргумент2], возвращаемое значение]
+# new_name: Callable[[int, int], int] = sum_a_b
+
+
+def counter(start: int = 0) -> Callable[[], int]:
+    # Данные переменной start лежат ТУТ
+
+    def step():
+        # При вызове мы переписываем start
+        # Это возможно благодаря nonlocal (доступ наружу)
+        nonlocal start
+        start += 1
+        return start
+
+    return step
+
+
+c1: Callable = counter()
+c2: Callable = counter(10)
+
+print(c1())
+print(c1())
+
+print(c2())
+print(c2())
