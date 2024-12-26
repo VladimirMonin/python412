@@ -316,3 +316,39 @@ def get_msg(msg: str) -> str:
 
 # print(get_msg("Привет, мир!")) # Не пройдет
 print(get_msg("Привет"))    # Пройдет
+
+######## Декораторы с параметрами ############
+
+"""
+Декоратор с 1 параметром
+длина строки
+проверяет что в args строки и их длина не выше чем этот параметр
+"""
+
+# Внешняя функция принемает параметры декоратора
+def max_length_decorator(max_length: int = 20):
+    # Внутренняя функция это сам декоратор - принемает функцию
+    def decorator(func: Callable) -> Callable:
+        # Обвёртка. Принемает аргументы для декорируемой функции
+        def wrapper(*args: Tuple[str])-> Any:
+            # Логика декоратора
+            for arg in args:
+                if not isinstance(arg, str) or len(arg) > max_length:
+                    raise ValueError(
+                        f"Аргументы должны быть строками и длина не выше чем {max_length}"
+                    )
+            # Тут мы окажемся если проверка прошла успешно
+            result = func(*args)
+            return result
+        
+        return wrapper
+    
+    return decorator
+
+
+@max_length_decorator()
+def get_message(msg: str) -> str:
+    return f"Получено сообщение: {msg}"
+
+# Тест
+print(get_message("Привет, мир!"))  # Не пройдет
