@@ -2,10 +2,11 @@ import asyncio
 from openai import AsyncOpenAI # pip install openai
 from hw_27_data import DATA
 
-API_KEY = "key"
+API_KEY = "ключ"
 BASE_URL = "https://api.vsegpt.ru/v1"
 MAX_CHUNK_SIZE = 2000 # Максимальная длина текста для 1 запроса к API
-SLEEP_TIME = 1 # Задержка между запросами
+SLEEP_TIME = 4 # Задержка между запросами
+OUTPUT_FILE = "lecture_summary.md"
 PROMPT_THEME = """
 Привет!
 
@@ -97,21 +98,73 @@ async def get_ai_request(prompt: str, model: str = "openai/gpt-4o-mini", max_tok
     )
     return response.choices[0].message.content
 
+OUTPUT_FILE = "lecture_summary.md"
 
-# Тест запросов
+def split_text_to_chunks(data: list) -> list:
+    """Разбивает текст на чанки не более MAX_CHUNK_SIZE символов"""
+    chunks = []
+    current_chunk = ""
+    
+    for item in data:
+        text = item['text']
+        if len(current_chunk) + len(text) <= MAX_CHUNK_SIZE:
+            current_chunk += text
+        else:
+            if current_chunk:
+                chunks.append(current_chunk)
+            current_chunk = text
+    
+    if current_chunk:
+        chunks.append(current_chunk)
+    
+    return chunks
+
+def save_to_markdown(timestamps: str, theme: str, chunks: list):
+    """Сохраняет результаты в markdown файл"""
+    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+        f.write("# Таймкоды\n\n")
+        f.write(timestamps)
+        f.write("\n\n---\n\n")
+        
+        f.write("# Краткое содержание\n\n")
+        f.write(theme)
+        f.write("\n\n---\n\n")
+        
+        f.write("# Конспект\n\n")
+        for chunk in chunks:
+            f.write(chunk)
+            f.write("\n\n---\n\n")
+
 async def main():
-    prompt_cow = "Как кричит корова?"
-    prompt_cat = "Как кричит кошка?"
-    prompt_monkey = "Как кричит обезьяна?"
+    # Получаем полный текст из DATA
+    full_text = " ".join([item['text'] for item in DATA])
+    
+    # 1. Получаем таймкоды и тему
+    tasks = [
+        get_ai_request(PROMPT_TIMESTAMPS + full_text),
+        get_ai_request(PROMPT_THEME + full_text)
+    ]
+    timestamps, theme = await asyncio.gather(*tasks)
+    await asyncio.sleep(SLEEP_TIME)
+    
+    # 2. Разбиваем на чанки
+    chunks = split_text_to_chunks(DATA)
+    
+    # 3. Отправляем чанки на обработку
+    conspect_tasks = []
+    for chunk in chunks:
+        prompt = PROMPT_CONSPECT_WRITER.format(
+            topic=theme,
+            full_text=full_text,
+            text_to_work=chunk
+        )
+        conspect_tasks.append(get_ai_request(prompt))
+        await asyncio.sleep(SLEEP_TIME)
+    
+    chunk_results = await asyncio.gather(*conspect_tasks)
+    
+    # 4. Сохраняем результаты
+    save_to_markdown(timestamps, theme, chunk_results)
 
-    prompts = [prompt_cow, prompt_cat, prompt_monkey]
-    results = await asyncio.gather(*[get_ai_request(prompt) for prompt in prompts])
-
-    print(results)
-
-
-asyncio.run(main())
-
-"""
-['Корова кричит "му".', 'Кошка обычно издает звуки, которые можно описать как "мяу". В зависимости от настроения и ситуации, кошка может мяукать по-разному: мягко, настойчиво, громко или тихо. Кроме того, кошки могут издавать и другие звуки, такие как шипение, ворчание или урчание.', 'Обезьяны издают множество звуков, чтобы общаться друг с другом, включая крики, крики, визги и другие звуки. Например, некоторые виды обезьян могут издавать громкие крики, которые могут звучать как "уа-уа" или "га-га". Каждый вид имеет свои особенности звучания, поэтому точное "крик" может варьироваться.']
-"""
+if __name__ == "__main__":
+    asyncio.run(main())
