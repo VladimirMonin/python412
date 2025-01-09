@@ -12,6 +12,8 @@ Lesson 23
 
 # Импортируем модуль для работы с асинхронностью
 import asyncio
+# Импортируем time.perf_counter()
+import time
 
 
 # Напишем функцию, которая будет выполняться асинхронно
@@ -30,12 +32,17 @@ async def task(time: int, name: str) -> str:
 
 # Функция которая запустит все эти задачи
 async def main():
-    pizza = await task(5, "Пицца")
-    film = await task(3, "Фильм")
-    friends = await task(2, "Друзья")
+    tasks = [task(3, "Пицца"), task(2, "Фильм"), task(1, "Друзья")]
+    results = await asyncio.gather(*tasks)
 
     # Выведем результаты
-    print(pizza, film, friends, "Поехали!")
+    print(*results, "Поехали!")
 
-
+# Засекаем старт
+start_time = time.perf_counter()
 asyncio.run(main())
+
+# Финиш
+finish_time = time.perf_counter()
+
+print(f"Время выполнения программы: {finish_time - start_time:.2f} секунд")
