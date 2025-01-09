@@ -1,6 +1,8 @@
+import asyncio
+from openai import AsyncOpenAI # pip install openai
+from hw_27_data import DATA
 
-
-API_KEY = "ключ"
+API_KEY = "key"
 BASE_URL = "https://api.vsegpt.ru/v1"
 MAX_CHUNK_SIZE = 2000 # Максимальная длина текста для 1 запроса к API
 SLEEP_TIME = 1 # Задержка между запросами
@@ -84,3 +86,32 @@ PROMPT_CONSPECT_WRITER = """
 {text_to_work}
 """
 
+client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
+
+async def get_ai_request(prompt: str, model: str = "openai/gpt-4o-mini", max_tokens: int = 16000, temperature: float = 0.7) -> str:
+    response = await client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=max_tokens,
+        temperature=temperature,
+    )
+    return response.choices[0].message.content
+
+
+# Тест запросов
+async def main():
+    prompt_cow = "Как кричит корова?"
+    prompt_cat = "Как кричит кошка?"
+    prompt_monkey = "Как кричит обезьяна?"
+
+    prompts = [prompt_cow, prompt_cat, prompt_monkey]
+    results = await asyncio.gather(*[get_ai_request(prompt) for prompt in prompts])
+
+    print(results)
+
+
+asyncio.run(main())
+
+"""
+['Корова кричит "му".', 'Кошка обычно издает звуки, которые можно описать как "мяу". В зависимости от настроения и ситуации, кошка может мяукать по-разному: мягко, настойчиво, громко или тихо. Кроме того, кошки могут издавать и другие звуки, такие как шипение, ворчание или урчание.', 'Обезьяны издают множество звуков, чтобы общаться друг с другом, включая крики, крики, визги и другие звуки. Например, некоторые виды обезьян могут издавать громкие крики, которые могут звучать как "уа-уа" или "га-га". Каждый вид имеет свои особенности звучания, поэтому точное "крик" может варьироваться.']
+"""
