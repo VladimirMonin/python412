@@ -1,11 +1,12 @@
 import asyncio
-from openai import AsyncOpenAI # pip install openai
+from openai import AsyncOpenAI  # pip install openai
 from hw_27_data import DATA
+import json
 
-API_KEY = "ключ"
+API_KEY = "sk-or-vv-32acad84830483432df6bb1eb3114ede486fe620ba237c07f152b84c6a27e782"
 BASE_URL = "https://api.vsegpt.ru/v1"
-MAX_CHUNK_SIZE = 2000 # Максимальная длина текста для 1 запроса к API
-SLEEP_TIME = 4 # Задержка между запросами
+MAX_CHUNK_SIZE = 5000  # Максимальная длина текста для 1 запроса к API
+SLEEP_TIME = 4  # Задержка между запросами
 OUTPUT_FILE = "lecture_summary.md"
 PROMPT_THEME = """
 Привет!
@@ -89,82 +90,145 @@ PROMPT_CONSPECT_WRITER = """
 
 client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
 
-async def get_ai_request(prompt: str, model: str = "openai/gpt-4o-mini", max_tokens: int = 16000, temperature: float = 0.7) -> str:
-    response = await client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=max_tokens,
-        temperature=temperature,
-    )
-    return response.choices[0].message.content
+
+def seconds_to_timecode(seconds: float) -> str:
+    """Конвертация секунд в таймкод"""
+    if seconds is None:
+        return "00:00:00"
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = int(seconds % 60)
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+
+
+# Функция которая примет в себя исходную дату
+#  {
+#         "timestamp": [
+#             1975.52,
+#             1977.42
+#         ],
+#         "text": " И давайте смотреть по коду."
+#     },
+
+# и добавит туда новый ключ "timestamp_text" ["00:00:00", "00:00:00"]
+
+
+def add_timestamp_text(data: list[dict]) -> list[dict]:
+    """
+    Добавляет в словарь ключ "timestamp_text"
+    :param data: список словарей с данными
+    :return: список словарей с добавленным ключом "timestamp_text"
+    """
+    for item in data:
+        start_time = seconds_to_timecode(item["timestamp"][0])
+        end_time = seconds_to_timecode(item["timestamp"][1])
+        item["timestamp_text"] = [start_time, end_time]
+    return data
+
+
+async def get_ai_request(prompt: str, max_retries: int = 3, base_delay: float = 2.0):
+    """
+    Отправляет запрос к API с механизмом повторных попыток
+    base_delay - начальная задержка, которая будет увеличиваться экспоненциально
+    :param prompt: текст запроса
+    :param max_retries: максимальное количество попыток
+    :param base_delay: начальная задержка между попытками
+    :return: ответ от API
+    """
+    for attempt in range(max_retries):
+        try:
+            response = await client.chat.completions.create(
+                model="openai/gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=16000,
+                temperature=0.7,
+            )
+            return response.choices[0].message.content
+
+        except openai.RateLimitError:
+            if attempt == max_retries - 1:
+                raise
+            delay = base_delay * (2**attempt)  # Экспоненциальное увеличение задержки
+            await asyncio.sleep(delay)
+
 
 OUTPUT_FILE = "lecture_summary.md"
+
 
 def split_text_to_chunks(data: list) -> list:
     """Разбивает текст на чанки не более MAX_CHUNK_SIZE символов"""
     chunks = []
     current_chunk = ""
-    
+
     for item in data:
-        text = item['text']
+        text = item["text"]
         if len(current_chunk) + len(text) <= MAX_CHUNK_SIZE:
             current_chunk += text
         else:
             if current_chunk:
                 chunks.append(current_chunk)
             current_chunk = text
-    
+
     if current_chunk:
         chunks.append(current_chunk)
-    
+
     return chunks
+
 
 def save_to_markdown(timestamps: str, theme: str, chunks: list):
     """Сохраняет результаты в markdown файл"""
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("# Таймкоды\n\n")
         f.write(timestamps)
         f.write("\n\n---\n\n")
-        
+
         f.write("# Краткое содержание\n\n")
         f.write(theme)
         f.write("\n\n---\n\n")
-        
+
         f.write("# Конспект\n\n")
         for chunk in chunks:
             f.write(chunk)
             f.write("\n\n---\n\n")
 
+
 async def main():
-    # Получаем полный текст из DATA
-    full_text = " ".join([item['text'] for item in DATA])
-    
-    # 1. Получаем таймкоды и тему
-    tasks = [
-        get_ai_request(PROMPT_TIMESTAMPS + full_text),
-        get_ai_request(PROMPT_THEME + full_text)
-    ]
-    timestamps, theme = await asyncio.gather(*tasks)
-    await asyncio.sleep(SLEEP_TIME)
-    
-    # 2. Разбиваем на чанки
-    chunks = split_text_to_chunks(DATA)
-    
-    # 3. Отправляем чанки на обработку
-    conspect_tasks = []
+    # 1. Добавление ключа "timestamp_text"
+    full_data = add_timestamp_text(DATA)
+    full_data_json_string = json.dumps(full_data)
+
+    # 2. Создаем задачу на таймкоды
+    timestamps_task = asyncio.create_task(
+        get_ai_request(PROMPT_TIMESTAMPS + json.dumps(full_data_json_string))
+    )
+
+    # 3. Создаем задачу на тему
+    theme_task = asyncio.create_task(
+        get_ai_request(PROMPT_THEME + json.dumps(full_data_json_string))
+    )
+
+    # 4. Пока задачи крутятся на API - мы делаем чанки
+    chunks = split_text_to_chunks(full_data)
+
+    # 5. Ждем выполнения задач
+    timestamps = await timestamps_task
+    theme = await theme_task
+
+    # 6. Формируем чанки-задания для отправки
+    сhunk_tasks = []
+
     for chunk in chunks:
         prompt = PROMPT_CONSPECT_WRITER.format(
             topic=theme,
-            full_text=full_text,
-            text_to_work=chunk
+            full_text=full_data_json_string,
+            text_to_work=chunk,
         )
-        conspect_tasks.append(get_ai_request(prompt))
-        await asyncio.sleep(SLEEP_TIME)
-    
-    chunk_results = await asyncio.gather(*conspect_tasks)
-    
-    # 4. Сохраняем результаты
-    save_to_markdown(timestamps, theme, chunk_results)
+        task = asyncio.create_task(get_ai_request(prompt))
+        сhunk_tasks.append(task)
+
+    results = await asyncio.gather(*сhunk_tasks)
+
+    save_to_markdown(timestamps, theme, results)
 
 if __name__ == "__main__":
     asyncio.run(main())
