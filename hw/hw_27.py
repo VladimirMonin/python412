@@ -8,6 +8,7 @@ BASE_URL = "https://api.vsegpt.ru/v1"
 MAX_CHUNK_SIZE = 5000  # Максимальная длина текста для 1 запроса к API
 SLEEP_TIME = 4  # Задержка между запросами
 OUTPUT_FILE = "lecture_summary.md"
+
 PROMPT_THEME = """
 Привет!
 
@@ -151,8 +152,6 @@ async def get_ai_request(prompt: str, max_retries: int = 3, base_delay: float = 
             delay = base_delay * (2**attempt)  # Экспоненциальное увеличение задержки
             await asyncio.sleep(delay)
 
-
-OUTPUT_FILE = "lecture_summary.md"
 
 
 def split_text_to_chunks(data: list) -> list:
