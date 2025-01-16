@@ -10,62 +10,49 @@ Lesson 25
 - @classmethod
 - @staticmethod
 - __call__
+- Пример полиморфизма на классах - болванках Image
 """
 
+import json
 
-class JpegImage:
-    """
-    Класс - муляж для демонстрации полиморфизма на примере работы с разными типами изображений
-    """
 
-    extensions = ["jpg", "jpeg"]
-
+class JsonFile:
     def __init__(self, file_path: str):
         self.file_path = file_path
 
-    @classmethod
-    def get_available_extensions(cls):
-        """
-        Метод возвращает список доступных расширений
-        """
-        return cls.extensions
-    
-    @classmethod
-    def is_valid_extension(cls, extension: str) -> bool:
-        """
-        Метод проверяет расширение на валидность
-        :param extension: Расширение файла
-        :return: True/
-        """
-        return extension in cls.extensions
-    
-    def open(self):
-        """
-        Метод имитирующий открытие файла
-        """
-        print(f"Открываем {self.file_path}")
+    def read(self):
+        with open(self.file_path, "r", encoding="utf-8") as file:
+            result = json.load(file)
+            return result
 
-    def crop(self, heigth, width):
-        """
-        Метод имитирующий обрезку файла
-        :param heigth: Выоста
-        :param width: ширина
-        """
-        print(f"Обрезаем файл {self.file_path} до ширины: {width} и высоты {heigth}")
+    def write(self, data: list[dict]):
+        with open(self.file_path, "w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
 
-    @staticmethod
-    def image_analys(file_path: str):
-        """
-        Анализ файла
-        """
-        print(f'{file_path} - это файл')
-
-    def __call__(self):
-        print(f"Вызван экземпляр класса {self.__class__.__name__}")
-
-    
+    def append(self, data: list[dict]):
+        # 0. Проверка типов данных
+        if not isinstance(data, list):
+            raise TypeError("Метод append принимает только список")
+        if not all(isinstance(item, dict) for item in data):
+            raise TypeError("Все элементы должны быть словарями")
+        # 1. Прочитать файл
+        file = self.read()
+        # 2. Добавить новые данные
+        file.extend(data)
+        # 3. Записать в файл
+        self.write(file)
 
 
-image = JpegImage("image.jpg")
-image.image_analys("банан.jpg")
-image()
+data = [
+    {"name": "Владимир", "age": 25, "is_married": True},
+    {"name": "Андрей", "age": 25, "is_married": True},
+]
+
+new_data= [
+    {"name": "Алексей", "age": 25, "is_married": True},
+
+]
+
+json_file = JsonFile("data.json")
+json_file.write(data)
+json_file.append(new_data)
