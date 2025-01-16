@@ -9,6 +9,7 @@ Lesson 25
 - __call__
 - @classmethod
 - @staticmethod
+- __call__
 """
 
 
@@ -59,8 +60,12 @@ class JpegImage:
         """
         print(f'{file_path} - это файл')
 
+    def __call__(self):
+        print(f"Вызван экземпляр класса {self.__class__.__name__}")
+
     
 
 
 image = JpegImage("image.jpg")
 image.image_analys("банан.jpg")
+image()
