@@ -9,49 +9,61 @@ Lesson 25
 - __call__
 """
 
-class Dog:
-    name = "Бобик"
 
-    def __init__(self, color: str):
-        print(f"Обрабатываем в __init__ экземпляр класса {self}")
-        self.color = color
+class JpegImage:
+    """
+    Класс - муляж для демонстрации полиморфизма на примере работы с разными типами изображений
+    """
 
-    # Посмотрим на полный конструктор. __new__
-    def __new__(cls, *args, **kwargs):
-        print(f"Создаём экземпляр класса {cls}")
-        instance = super().__new__(cls)
-        print(f'Это уже созданная собака {instance}')
-        return instance
+    def __init__(self, file_path: str):
+        self.file_path = file_path
 
-"""
-Первый экземпляр
-Создаём экземпляр класса <class '__main__.Dog'>
-Это уже созданная собака <__main__.Dog object at 0x0000015BC7596B40>
-Обрабатываем в __init__ экземпляр класса <__main__.Dog object at 0x0000015BC7596B40>
+    def open(self):
+        """
+        Метод имитирующий открытие файла
+        """
+        print(f"Открываем {self.file_path}")
 
-Второй
-Создаём экземпляр класса <class '__main__.Dog'>
-Это уже созданная собака <__main__.Dog object at 0x0000015BC7596B70>
-Обрабатываем в __init__ экземпляр класса <__main__.Dog object at 0x0000015BC7596B70>
-"""
+    def crop(self, heigth, width):
+        """
+        Метод имитирующий обрезку файла
+        :param heigth: Выоста
+        :param width: ширина
+        """
+        print(f"Обрезаем файл {self.file_path} до ширины: {width} и высоты {heigth}")
 
-dog = Dog("черный")
-dog1 = Dog("белая")
-dog1.name = "Стрелка"
 
-Dog.name = "Шарик"
+class PngImage:
+    """
+    Класс - муляж для демонстрации полиморфизма на примере работы с разными типами изображений
+    """
 
-print(dog.name, dog.color)
-print(dog1.name, dog1.color)
+    def __init__(self, file_path: str):
+        self.file_path = file_path
 
-print(dog1.__class__.name) # Но Шарик мы можем достать - если таки обратиться к классу этого экземпляра
+    def open(self):
+        """
+        Метод имитирующий открытие файла
+        """
+        print(f"Открываем {self.file_path}")
 
-# __dict__ - коллекция которая даст нам все атрибуты экземпляра
-print(dog.__dict__) # {'color': 'черный'}
-print(dog1.__dict__) # {'color': 'белая', 'name': 'Стрелка'}
+    def crop(self, heigth, width):
+        """
+        Метод имитирующий обрезку файла
+        :param heigth: Выоста
+        :param width: ширина
+        """
+        print(f"Обрезаем файл {self.file_path} до ширины: {width} и высоты {heigth}")
 
-print(dir(dog1))  # атрибуты и методы экземпляра
 
-"""
-['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', 'color', 'name']
-"""
+image_jpeg_1 = JpegImage("image_1.jpeg")
+image_jpeg_2 = JpegImage("image_2.jpeg")
+image_png_1 = PngImage("image_1.png")
+image_png_2 = PngImage("image_2.png")
+
+
+images = [image_jpeg_1, image_jpeg_2, image_png_1, image_png_2]
+
+for image in images:
+    image.open()
+    image.crop(100, 100)
