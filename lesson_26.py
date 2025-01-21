@@ -12,10 +12,12 @@ __ - приватные атрибуты и методы
 """
 from dotenv import load_dotenv
 import os
+from openai import OpenAI    # pip install openai
 
 load_dotenv()
 
 VSE_GPT_KEY= os.getenv("VSE_GPT_KEY")
+BASE_URL = "https://api.vsegpt.ru/v1"
 
 class Employee:
     def __init__(self, name: str, age: int, salary: int | float):
@@ -76,3 +78,81 @@ VSE_GPT_KEY = os.getenv("VSE_GPT_KEY")
 
 
 """
+
+#PRACTICE - Сделаем класс запроса к AI
+"""
+ДОНОР:
+client = AsyncOpenAI(api_key=API_KEY, base_url=BASE_URL)
+async def get_ai_request(prompt: str, max_retries: int = 3, base_delay: float = 2.0):
+
+    Отправляет запрос к API с механизмом повторных попыток
+    base_delay - начальная задержка, которая будет увеличиваться экспоненциально
+    :param prompt: текст запроса
+    :param max_retries: максимальное количество попыток
+    :param base_delay: начальная задержка между попытками
+    :return: ответ от API
+
+    for attempt in range(max_retries):
+        try:
+            response = await client.chat.completions.create(
+                model="openai/gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=16000,
+                temperature=0.7,
+            )
+            return response.choices[0].message.content
+
+        except openai.RateLimitError:
+            if attempt == max_retries - 1:
+                raise
+            delay = base_delay * (2**attempt)  # Экспоненциальное увеличение задержки
+            await asyncio.sleep(delay)
+
+"""
+
+class AiRequest():
+    def __init__(self, api_key: str, model: str, base_url: str):
+        self.__models = ["openai/gpt-4o-mini", "anthropic/claude-3-5-haiku", "deepseek/deepseek-chat"]
+        self.api_key = api_key
+        self.__model = model if model in self.__models else "openai/gpt-4o-mini"
+        self.__temperature = 0.7
+        self.__max_tokens = 8000
+        self.__base_url = base_url
+        self.__client = OpenAI(api_key=self.api_key, base_url=self.__base_url)
+       
+
+    @property
+    def model(self, model: str):
+        return self.__model
+    
+    @model.setter
+    def model(self, model: str):
+        if model not in self.__models:
+            raise ValueError("Модель не найдена")
+        self.__model = model
+
+    def get_ai_request(self, prompt: str):
+        
+        response = self.__client.chat.completions.create(
+            model=self.__model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=self.__max_tokens,
+            temperature=self.__temperature,
+        )
+        return response.choices[0].message.content
+
+ai_request = AiRequest(model="openai/gpt-4o-mini", api_key=VSE_GPT_KEY, base_url="https://api.vsegpt.ru/v1")
+task = "Шутка про обезъянку"
+
+result = ai_request.get_ai_request(task)
+print(result)
+
+ai_request.model = "anthropic/claude-3-5-haiku"
+result = ai_request.get_ai_request(task)
+
+print(result)
+
+
+
+
+
