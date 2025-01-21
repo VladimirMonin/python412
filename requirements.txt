@@ -6,3 +6,4 @@ mypy
 PyYAML
 plyer
 aiohttp
+python-dotenv

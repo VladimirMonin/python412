@@ -10,7 +10,12 @@ Lesson 26
 _ - защищённые атрибуты и методы
 __ - приватные атрибуты и методы
 """
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+VSE_GPT_KEY= os.getenv("VSE_GPT_KEY")
 
 class Employee:
     def __init__(self, name: str, age: int, salary: int | float):
@@ -57,15 +62,17 @@ class Employee:
         return f"Имя: {self.name}\nВозраст: {self.__age}\nЗарплата: {self._salary}. Выслуга: {self.__experience} лет"
 
 
-employee = Employee("Спартак", 30, 300000)
-print(employee)
-employee.add_experience()
-print(employee)
-employee.add_experience()
-print(employee)
+"""
+.env - ЕГО НЕ ОТПРАВЛЯЮТ НА ГИТХАБ
+VSE_GPT_KEY=sk-1234567890
 
-employee.set_age(25)
-print(employee.get_age())
+.env.example - ЕГО ОТПРАВЛЯЮТ НА ГИТХАБ
+VSE_GPT_KEY=КЛЮЧ_ОТ_ВСЕ_ГПТ
 
-employee.salary_index = 15
-print(employee.salary_index)
+
+pip install python-dotenv
+load_dotenv() - загружает переменные из .env
+VSE_GPT_KEY = os.getenv("VSE_GPT_KEY")
+
+
+"""
