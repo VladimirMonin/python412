@@ -10,14 +10,14 @@ Lesson 26
 _ - защищённые атрибуты и методы
 __ - приватные атрибуты и методы
 """
-from dotenv import load_dotenv
-import os
+from dotenv import load_dotenv # pip install python-dotenv
+import os # встроенный модуль
 from openai import OpenAI    # pip install openai
 
 load_dotenv()
 
 VSE_GPT_KEY= os.getenv("VSE_GPT_KEY")
-BASE_URL = "https://api.vsegpt.ru/v1"
+BASE_URL = os.getenv("BASE_URL",  "https://api.vsegpt.ru/v1")
 
 class Employee:
     def __init__(self, name: str, age: int, salary: int | float):
