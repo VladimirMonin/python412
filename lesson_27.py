@@ -32,20 +32,69 @@ class UtfCeasarCipher:
         
         self.__indent_index = value
 
-# Тестируем геттер и сеттер
-cipher = UtfCeasarCipher()
-print(cipher.indent_index)
-cipher.indent_index = 5
-print(cipher.indent_index)
-# cipher.indent_index = 50
-# cipher.indent_index = "банан"
+    def __shift_indent(self, message: str, direction: bool):
+        """
+        Приватный метод для сдвига всего послания на __indent_index
+        :param message: текст сообщения
+        :param direction: True - кодируем, False - декодируем
+        :return: Результат
+        """
 
-while True:
-    try:
-        indent = input("Введите индекс сдвига: ")
-        cipher.indent_index = int(indent)
-        break
+        result = ""
+
+        for char in message:
+            # chr - возвращает символ по коду в таблице UTF-8
+            # ord - возвращает код символа в таблице UTF-8
+            if direction:
+                new_char = chr(ord(char) + self.__indent_index)
+            else:
+                new_char = chr(ord(char) - self.__indent_index)
+
+            result += new_char
+
+        return result
     
-    except ValueError as e:
-        print(e)
-        print("Попробуйте снова")
+    def encode(self, message: str) -> str:
+        """
+        Публичный интерфейс для взаимодействия с классом
+        Метод кодирования
+        :param message: текст сообщения
+        :return: Результат
+        """
+        return self.__shift_indent(message, True)
+    
+    def decode(self, message: str) -> str:
+        """
+        Публичный интерфейс для взаимодействия с классом
+        Метод декодирования
+        :param message: текст сообщения
+        :return: Результат
+        """
+        return self.__shift_indent(message, False)
+
+
+
+# Тестируем
+if __name__ == "__main__":
+    cipher = UtfCeasarCipher()
+    
+    while True:
+        # Тут 2 потенциальных места для исключений
+        # 1. Ввод индекса сдвига - int - ValueError
+        # 2. Установка в Setter - ValueError
+        try:
+            indent = int(input("Введите индекс сдвига: "))
+            cipher.indent_index = indent
+
+        except ValueError as e:
+            print(e)
+            print("Индекс сдвига должен быть числом")
+            continue
+
+        user_message = input("Введите сообщение: ")
+        encoded_message = cipher.encode(user_message)
+        decoded_message = cipher.decode(encoded_message)
+
+        print(f"Закодированное сообщение: {encoded_message}")
+        print(f"Декодированное сообщение: {decoded_message}")
+
