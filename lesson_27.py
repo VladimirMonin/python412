@@ -7,96 +7,64 @@ Lesson 27
 - ord() - возвращает код символа в таблице UTF-8
 - chr() - возвращает символ по коду в таблице UTF-8
 """
+class ManagerEmployee:
+    def __init__(self, name: str, age: int, salary: int | float, position: str):
+        self.name = name
+        self.age = age
+        self.salary = salary
+        self.position = position
 
-print(ord("A"))  # 65
-print(chr(65))  # A
+    def __str__(self):
+        return f"Сотрудник: {self.name}, возраст: {self.age}, зарплата: {self.salary}, должность: {self.position}"
 
+    def drink_coffee(self):
+        print(f"{self.name} в должности {self.position} выпил кофе")
 
-class UtfCeasarCipher:
-    max_indent = 10
+    def work(self):
+        print(f"{self.name} поработал")
 
-    def __init__(self):
-        self.__indent_index = 1
-
-    @property
-    def indent_index(self):
-        return self.__indent_index
-    
-    @indent_index.setter
-    def indent_index(self, value: int):
-        if not isinstance(value, int):
-            raise TypeError("Индекс должен быть числом")
-        
-        if abs(value) > self.max_indent:
-            raise ValueError(f"Индекс сдвига должен быть меньше {self.max_indent}")
-        
-        self.__indent_index = value
-
-    def __shift_indent(self, message: str, direction: bool):
-        """
-        Приватный метод для сдвига всего послания на __indent_index
-        :param message: текст сообщения
-        :param direction: True - кодируем, False - декодируем
-        :return: Результат
-        """
-
-        result = ""
-
-        for char in message:
-            # chr - возвращает символ по коду в таблице UTF-8
-            # ord - возвращает код символа в таблице UTF-8
-            if direction:
-                new_char = chr(ord(char) + self.__indent_index)
-            else:
-                new_char = chr(ord(char) - self.__indent_index)
-
-            result += new_char
-
-        return result
-    
-    def encode(self, message: str) -> str:
-        """
-        Публичный интерфейс для взаимодействия с классом
-        Метод кодирования
-        :param message: текст сообщения
-        :return: Результат
-        """
-        return self.__shift_indent(message, True)
-    
-    def decode(self, message: str) -> str:
-        """
-        Публичный интерфейс для взаимодействия с классом
-        Метод декодирования
-        :param message: текст сообщения
-        :return: Результат
-        """
-        return self.__shift_indent(message, False)
+    def hit_coworker(self, coworker):
+        print(f"{self.name} ударил {coworker.name}")
 
 
+class Employee:
+    def __init__(self, name: str, age: int, salary: int | float, position: str):
+        self.name = name
+        self.age = age
+        self.salary = salary
+        self.position = position
 
-# Тестируем
-if __name__ == "__main__":
-    cipher = UtfCeasarCipher()
-    
-    while True:
-        # Тут 2 потенциальных места для исключений
-        # 1. Ввод индекса сдвига - int - ValueError
-        # 2. Установка в Setter - ValueError
-        try:
-            indent = int(input("Введите индекс сдвига: "))
-            try:
-                cipher.indent_index = indent
-            except ValueError as e:
-                print(e)
-                continue
-        except ValueError as e:
-            print(e)
-            continue
+    def __str__(self):
+        return f"Сотрудник: {self.name}, возраст: {self.age}, зарплата: {self.salary}, должность: {self.position}"
 
-        user_message = input("Введите сообщение: ")
-        encoded_message = cipher.encode(user_message)
-        decoded_message = cipher.decode(encoded_message)
+    def drink_coffee(self):
+        print(f"{self.name} в должности {self.position} выпил кофе")
 
-        print(f"Закодированное сообщение: {encoded_message}")
-        print(f"Декодированное сообщение: {decoded_message}")
+    def work(self):
+        print(f"{self.name} поработал")
 
+
+class Organisaton:
+    def __init__(self, name: str, employees: list[Employee]):
+        self.name = name
+        self.employees = employees
+
+    def create_employee(self, name: str, age: int, salary: int | float, position: str):
+        employee = Employee(name, age, salary, position)
+        self.employees.append(employee)
+
+    def delete_employee(self, employee: Employee):
+        self.employees.remove(employee)
+
+
+# Тест
+organisation = Organisaton("ООО Рога и Копыта", [])
+organisation.create_employee("Владимир", 25, 100000, "Рядовой")
+organisation.create_employee("Андрей", 25, 100000, "Рядовой")
+organisation.create_employee("Сергей", 25, 100000, "Рядовой")
+
+[print(employee) for employee in organisation.employees]
+
+# Удалим сотрудника
+organisation.delete_employee(organisation.employees[0])
+[print(employee) for employee in organisation.employees]
