@@ -84,11 +84,13 @@ if __name__ == "__main__":
         # 2. Установка в Setter - ValueError
         try:
             indent = int(input("Введите индекс сдвига: "))
-            cipher.indent_index = indent
-
+            try:
+                cipher.indent_index = indent
+            except ValueError as e:
+                print(e)
+                continue
         except ValueError as e:
             print(e)
-            print("Индекс сдвига должен быть числом")
             continue
 
         user_message = input("Введите сообщение: ")
