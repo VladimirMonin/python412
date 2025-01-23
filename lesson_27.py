@@ -45,26 +45,28 @@ class Employee:
 
 
 class Organisaton:
-    def __init__(self, name: str, employees: list[Employee]):
+    def __init__(self, name: str, employees: list[Employee | ManagerEmployee]):
         self.name = name
         self.employees = employees
 
-    def create_employee(self, name: str, age: int, salary: int | float, position: str):
-        employee = Employee(name, age, salary, position)
+    def add_employee(self, employee: Employee | ManagerEmployee):
         self.employees.append(employee)
 
-    def delete_employee(self, employee: Employee):
+    def delete_employee(self, employee: Employee | ManagerEmployee):
         self.employees.remove(employee)
 
 
 # Тест
 organisation = Organisaton("ООО Рога и Копыта", [])
-organisation.create_employee("Владимир", 25, 100000, "Рядовой")
-organisation.create_employee("Андрей", 25, 100000, "Рядовой")
-organisation.create_employee("Сергей", 25, 100000, "Рядовой")
+# Создадим сотрудников
+employee_1 = Employee("Вася", 25, 100000, "Программист")
+employee_2 = Employee("Петя", 25, 100000, "Программист")
+manager_employee = ManagerEmployee("Ваня", 25, 500000, "Менеджер")
 
-[print(employee) for employee in organisation.employees]
+# Добавим сотрудников в организацию
+organisation.add_employee(employee_1)
+organisation.add_employee(employee_2)
+organisation.add_employee(manager_employee)
 
-# Удалим сотрудника
-organisation.delete_employee(organisation.employees[0])
-[print(employee) for employee in organisation.employees]
+# Выдадим мотивационный пендаль!
+manager_employee.hit_coworker(employee_1)
