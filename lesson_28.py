@@ -12,32 +12,37 @@ class Animal():
         self.name = name
         self.age = age
 
-    def test(self):
-        print(f"Тестовый метод из класса Animal")
-        
-
 
 class Swim:
+    def __init__(self, deep: int):
+        self.deep = deep
+
     def swim(self):
-        return f"плавает"
+        return f"Ныряет на глубину {self.deep} метров"
     
-    def test(self):
-        print(f"Тестовый метод из класса Swim")
 
 
 class Fly:
+    def __init__(self, speed: int, height: int):
+        self.speed = speed
+        self.height = height
+
     def fly(self):
-        return f"летает"
+        return f"Летает со скоростью {self.speed} км/ч на высоту {self.height} метров"
     
-    def test(self):
-        print(f"Тестовый метод из класса Fly")
 
+class Duck(Animal, Swim, Fly):
+    def __init__(
+        self, name: str, age: int, deep: int, speed: int, height: int, color: str
+    ):
+        Animal.__init__(self, name, age)
+        Swim.__init__(self, deep)
+        Fly.__init__(self, speed, height)
+        self.color = color
 
-class Duck(Swim, Fly, Animal):
-    def __init__(self, name: str, age: int):
-        super().__init__(name, age)
 
 print(Duck.__mro__)
-duck = Duck("Дональд", 2)
-duck.test()
+duck = Duck("Дональд", 2, 5, 100, 1000, "белый")
+print(duck.swim())
+print(duck.fly())
 # (<class '__main__.Duck'>, <class '__main__.Animal'>, <class '__main__.Swim'>, <class '__main__.Fly'>, <class 'object'>)
