@@ -4,25 +4,25 @@
 - Иерархическое наследование (вертикальное) - на примере мопса
 """
 
+#PRACTICE
+"""
+класс - большая матрешка
+- атрибут класса - счетчик выпущенных экземпляров
+- атрибут экземпляра - ID экземпляра
 
-class Animal(object):
-    def __init__(self, name: str, age: int):
-        self.name = name
-        self.age = age
+класс - средняя матрешка
+- атрибут класса - счетчик выпущенных экземпляров
+- атрибут экземпляра - Большая матрешка
 
-class Dog(Animal):
-    def __init__(self, favorite_toy: str, name: str, age: int):
-        super().__init__(name, age)
-        self.favorite_toy = favorite_toy
+класс - маленькая матрешка
+- атрибут экземпляра - ID экземпляра
+- атрибут экземпляра - средняя матрешка
 
+Иерархическое наследование
 
-class Mops(Dog):
-    def __init__(self, noise: str,  favorite_toy: str,  name: str, age: int):
-        super().__init__(favorite_toy, name, age)
-        self.noise = noise
+создавая маленькую матрешку, мы создаем весь комплект
 
 
-mops = Mops("храпит", "мяч", "Ворчун", 2)
-# MRO - Method Resolution Order
-print(Mops.__mro__)
-# (<class '__main__.Mops'>, <class '__main__.Dog'>, <class '__main__.Animal'>, <class 'object'>)
+возможно создадим миксины 
+Чтобы можно было делать матрешки из разных материлов и разных коллекций
+"""
