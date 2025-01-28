@@ -1,49 +1,28 @@
 """
 Тема: ООП Ч5. Наследование. Abstractmethod. Super. Переопределение и расширение. Урок: 28
+- Абстрактные классы и методы
+- Иерархическое наследование (вертикальное) - на примере мопса
 """
 
-"""Device (базовый: бренд, модель)
-Phone (+ номер телефона)
-Laptop (+ размер экрана)
-Tablet (+ поддержка стилуса)
-"""
-# Absctract Base Class
-from abc import ABC, abstractmethod
 
-# 1. Наследование от  ABC
-# 2. Декораторы абстрактных методов
+class Animal(object):
+    def __init__(self, name: str, age: int):
+        self.name = name
+        self.age = age
 
-class AbstractFile(ABC):
-
-    def __init__(self, file_path: str):
-        self.file_path = file_path
-
-    @abstractmethod
-    def read(self):
-        pass
-
-    @abstractmethod
-    def write(self, data: list[dict]):
-        pass
-
-    @abstractmethod
-    def append(self, data: list[dict]):
-        pass
-
-    def __str__(self):
-        return f"{self.__class__.__name__} {self.file_path}"
+class Dog(Animal):
+    def __init__(self, favorite_toy: str, name: str, age: int):
+        super().__init__(name, age)
+        self.favorite_toy = favorite_toy
 
 
-class TxtFile(AbstractFile):
-    
-    def read(self):
-        pass
-
-    def write(self):
-        pass
-
-    def append(self):
-        pass
+class Mops(Dog):
+    def __init__(self, noise: str,  favorite_toy: str,  name: str, age: int):
+        super().__init__(favorite_toy, name, age)
+        self.noise = noise
 
 
-txt_file = TxtFile("file.txt")
+mops = Mops("храпит", "мяч", "Ворчун", 2)
+# MRO - Method Resolution Order
+print(Mops.__mro__)
+# (<class '__main__.Mops'>, <class '__main__.Dog'>, <class '__main__.Animal'>, <class 'object'>)
