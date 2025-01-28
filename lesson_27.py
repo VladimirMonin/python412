@@ -15,18 +15,33 @@ self.__class__.__name__
 """
 
 class Animal:
+    def __init__(self, name: str, age: int):
+        self.name = name
+        self.age = age
+
     def voise(self):
         # self. - экземпляр
         # __class__ обращение к своему классу
         # __name__ получение имени класса в виде строки
-        print(f"{self.__class__.__name__} подаёт голос")
+        return f"{self.__class__.__name__} подаёт голос"
+    
+    def movie(self):
+        return f"{self.name} двигается"
 
 
 class Dog(Animal):
-    pass
+    
+    def movie(self):
+        return f"{self.name} бегает"
+    
+    def voise(self):
+        # voise = Animal.voise(self)
+        voise = super().voise()
+        voise += " гав-гав"
+        return voise
 
 
-dog = Dog()
-animal = Animal()
+dog = Dog("Белка", 2)
+animal = Animal("Стрелка", 3)
 dog.voise() # Dog подает голос
 animal.voise() # Animal подает голос
