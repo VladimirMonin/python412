@@ -2,71 +2,42 @@
 Тема: ООП Ч5. Наследование. Abstractmethod. Super. Переопределение и расширение. Урок: 28
 - Абстрактные классы и методы
 - Иерархическое наследование (вертикальное) - на примере мопса
+- Матрешки
 """
 
-#PRACTICE
-"""
-класс - большая матрешка
-- атрибут класса - счетчик выпущенных экземпляров
-- атрибут экземпляра - ID экземпляра
+# Множественное наследование
 
-класс - средняя матрешка
-- атрибут класса - счетчик выпущенных экземпляров
-- атрибут экземпляра - Большая матрешка
+class Animal():
+    def __init__(self, name: str, age: int):
+        self.name = name
+        self.age = age
 
-класс - маленькая матрешка
-- атрибут экземпляра - ID экземпляра
-- атрибут экземпляра - средняя матрешка
-
-Иерархическое наследование
-
-создавая маленькую матрешку, мы создаем весь комплект
+    def test(self):
+        print(f"Тестовый метод из класса Animal")
+        
 
 
-возможно создадим миксины 
-Чтобы можно было делать матрешки из разных материлов и разных коллекций
-"""
-
-class BigMattreshka:
-    id = 0
-    def __init__(self):
-        self.id = self.__class__.id
-        self.__class__.id += 1
-
-    def __str__(self):
-        return f"Матрешка размера {self.__class__.__name__} с id {self.id}"
+class Swim:
+    def swim(self):
+        return f"плавает"
     
-    @classmethod
-    def get_id(cls):
-        return cls.id
+    def test(self):
+        print(f"Тестовый метод из класса Swim")
 
 
-class MediumMattreshka(BigMattreshka):
-    id = 0
-    def __init__(self):
-        self.id = self.__class__.id
-        self.__class__.id += 1
-        self.big_mattreshka = BigMattreshka()
+class Fly:
+    def fly(self):
+        return f"летает"
+    
+    def test(self):
+        print(f"Тестовый метод из класса Fly")
 
 
-class SmallMattreshka(MediumMattreshka):
-    id = 0
-    def __init__(self):
-        self.id = self.__class__.id
-        self.__class__.id += 1
-        self.medium_mattreshka = MediumMattreshka()
+class Duck(Swim, Fly, Animal):
+    def __init__(self, name: str, age: int):
+        super().__init__(name, age)
 
-
-sm = SmallMattreshka()
-big = BigMattreshka()
-big2 = BigMattreshka()
-big3 = BigMattreshka()
-
-print(sm.id)
-print(sm.medium_mattreshka.big_mattreshka.id)
-print(big.id)
-print(big2.id)
-print(big3.id)
-print(big.get_id(), big3.get_id())
-print(SmallMattreshka.id)
-print(sm.get_id())
+print(Duck.__mro__)
+duck = Duck("Дональд", 2)
+duck.test()
+# (<class '__main__.Duck'>, <class '__main__.Animal'>, <class '__main__.Swim'>, <class '__main__.Fly'>, <class 'object'>)
