@@ -1,104 +1,68 @@
 """
 Тема: ООП Ч6. Миксины на примерах. Урок: 29
 - Псевдокод Django и добавление MenuMixin в классы
+- Специальные методы, магические методы double underscope methods
+    - __init__ - Иницилизатор
+    - __str__ - Строковое представление объекта
+    - __len__ - Длина объекта
+    - __bool__ - Преобразование объекта в булево значение
+    - __call__ - Вызов объекта как функции
+    - __iter__ - Итератор
 """
 
+class Playlist:
+    def __init__(self, name):
+        self.name = name
+        self.songs = []
+        self._index = 0
 
-class View:
-    """
-    Класс имитирующий работу вью в Django
-    """
+    def add_song(self, song):
+        self.songs.append(song)
 
-
-
-class BlogModel:
-    """
-    Класс имитирующий работу БД в Джанго
-    """
-
-    def __init__(self, title, content, author):
-        self.title = title
-        self.content = content
-        self.author = author
-
+    def __len__(self):
+        # тут может быть сложная логика, но мы отдаем наружу int
+        return len(self.songs)
+    
     def __str__(self):
-        return f'Пост "{self.title}" от {self.author}. {self.content[:20]}...'
+        # тут может быть сложная логика, но мы отдаем наружу str
+        return f'Плейлист "{self.name}, кол-во треков: {len(self.songs)}"'
     
+    def __bool__(self):
+        # тут может быть сложная логика, но мы отдаем наружу bool
+        return bool(self.songs)
     
-    def __repr__(self):
-        return f"{self.__class__.__name__}. {self.__dict__}"
+    def __call__(self, vibe: str):
+        # тут может быть сложная логика, мы можем и принимать и отдавать
+        return(f'Начал проигрывание {self.name} с настроением: {vibe}')
 
+    def __iter__(self):
+        # Работает при помещении экземпляра в for
+        self._index = 0  # Сбрасываем индекс при начале итерации
+        return self  # Возвращаем сам объект как итератор
 
-class MenuMixin:
-    """
-    Миксин имитирующий добавление меню в классовые вью в Django
-    """
+    def __next__(self):
+        # Работает при вызове next() - Т.е. при каждой итерации
+        try:
+            song = self.songs[self._index]
+            self._index += 1
+            return f"Сейчас играет: {song}"
+        except IndexError:
+            self._index = 0  # Сбрасываем индекс
+            # Если закончились песни, выбрасываем спец. исключение котороые обрабатывает FOR автоматом`
+            raise StopIteration("Плейлист закончился!")
 
-    menu_data = [
-        {"main": "Главная", "url": "/"},
-        {"main": "О нас", "url": "/about"},
-        {"main": "Контакты", "url": "/contacts"},
-        {"main": "Блог", "url": "/blog"},
-    ]
+playlist = Playlist("Рок хиты")
+playlist.add_song("Queen - We Will Rock You")
+playlist.add_song("AC/DC - Highway to Hell")
+playlist.add_song("Nirvana - Smells Like Teen Spirit")
 
-    def get_menu(self):
-        return self.menu_data
+# Вариант 1: через for
+for song in playlist:
+    print(song)
 
-
-class BlogListView(MenuMixin, View):
-    """
-    Имитация представления каталога постов в блоге
-    """
-
-    def __init__(self, posts: list[BlogModel]):
-        self.posts = posts
-
-    def __call__(self):
-        print(self.get_menu())
-        return self.posts
-
-
-class BlogDetailView(MenuMixin, View):
-    """
-    Имитация представления детального отображения поста в блоге
-    """
-
-    def __init__(self, post: BlogModel):
-        self.post = post
-
-    def __call__(self):
-        print(self.get_menu())
-        return self.post
-
-
-# ТЕСТИРУЕМ
-
-# Создаем посты
-posts = [
-    BlogModel(
-        "Django для новичков",
-        "Очередной пост от маэстро Питоньи о том что Джанго может освоить каждый!",
-        "Питонья",
-    ),
-    BlogModel(
-        "Покружаемся в кроличью нору PostgreSQL",
-        "Сегодня мы продолжим погружение в удивительный мир баз данных и открытой и свободной Постгры!",
-        "Автор 2",
-    ),
-    BlogModel(
-        "Флас",
-        "Бегите глупцы! Он не так прост как его пытаются представить! Всё придется делать своими руками!!!!",
-        "Анон",
-    ),
-]
-
-# Создаем экземпляры вью
-blog_list_view = BlogListView(posts)
-blog_detail_view = BlogDetailView(posts[0])
-
-# Делаем тест!
-if __name__ == "__main__":
-    print(blog_list_view())   # __repr__
-    print("-" * 50)
-    print(blog_detail_view())  # __str__
-    print()
+# Вариант 2: через next()
+playlist_iter = iter(playlist)
+print(next(playlist_iter))
+print(next(playlist_iter))
+print(next(playlist_iter))
+# Тут будет StopIteration
