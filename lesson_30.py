@@ -31,3 +31,38 @@ COMPARISON Operations / Операции сравнения:
 - __le__(self, other)     # Less Than or Equal to (<=) / Меньше или равно
 - __ge__(self, other)     # Greater Than or Equal to (>=) / Больше или равно
 """
+
+
+# Класс GameScore (игровые очки) - для демонстрации работы математических операторов
+
+class GameScore:
+    def __init__(self, score):
+        self.score = score
+
+    def __str__(self):
+        return f'Ваши очки: {self.score}'
+
+    def __repr__(self):
+        return f'GameScore(score="{self.score}")'
+
+    def __iadd__(self, other):
+        self.score += other.score
+        return self
+
+    def __add__(self, other):
+        return self.__iadd__(other)
+
+    def __sub__(self, other):
+        return self.__isub__(other)
+
+    def __isub__(self, other):
+        self.score -= other.score
+        return self
+
+my_score = GameScore(100)
+print(my_score)
+
+new_score = GameScore(50)
+
+my_score += new_score
+print(my_score)
