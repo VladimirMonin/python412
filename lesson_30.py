@@ -30,6 +30,13 @@ COMPARISON Operations / Операции сравнения:
 - __gt__(self, other)     # Greater Than (>) / Больше
 - __le__(self, other)     # Less Than or Equal to (<=) / Меньше или равно
 - __ge__(self, other)     # Greater Than or Equal to (>=) / Больше или равно
+
+
+В Python сравнительные операторы (==, !=, <, <=, >, >=) работают через специальные методы. Если вы хотите обеспечить работу ВСЕХ операторов сравнения для объектов (например, игроков), достаточно явно определить три метода:
+
+• eq: для проверки равенства (==);
+• lt: для проверки «меньше чем» (<);
+• gt: для проверки «больше чем» (>).
 """
 # Собственное исключение GameSroceOperationError - для обработки ошибок при работе с математическими операторами
 
@@ -80,10 +87,92 @@ class GameScore:
     def __sub__(self, other: "GameScore"):
         return self.__isub__(other)
 
-my_score = GameScore(100)
-print(my_score)
+    def __bool__(self):
+        return bool(self.score)
 
-new_score = GameScore(50)
+# Композиция. В таком варианте очки - неотделимы от игрока. Живут и умирают с ним.
+# class Player2:
+#     def __init__(self):
+#         self.scores = GameScore(0)
 
-my_score -= new_score
-print(my_score)
+
+# Добавим класс Игрок - у которого на инициализации будет создаваться баланс
+# Агрегация. В таком варианте Очки - могут иметь самостоятельность и в какой то момент "попасть" в игрока
+class Player:
+    def __init__(self, scores: GameScore, nickname: str):
+        self.scores = scores
+        self.nickname = nickname
+
+    def __str__(self):
+        return f'Игрок {self.nickname}: {self.scores}'
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __eq__(self, other: "Player"):
+        return self.scores.score == other.scores.score
+
+    def __lt__(self, other: "Player"):
+        return self.scores.score < other.scores.score
+
+    def __gt__(self, other: "Player"):
+        return self.scores.score > other.scores.score
+
+    # МАТЕМАТИКА. Будет 4 метода. Такие же как в GameScore.
+    # Мы опишем эти же 4 метода, левый операнд self.socres, правый - other: GameScore
+
+    def __iadd__(self, other: "GameScore"):
+        self.scores += other
+        return self
+
+    def __isub__(self, other: "GameScore"):
+        self.scores -= other
+        return self
+
+    def __add__(self, other: "GameScore"):
+        return self.__iadd__(other)
+
+    def __sub__(self, other: "GameScore"):
+        return self.__isub__(other)
+
+    def __bool__(self):
+        return bool(self.scores)
+
+
+p1 = Player(scores=GameScore(200), nickname="Фил")
+p2 = Player(scores=GameScore(190), nickname="Боб")
+p3 = Player(scores=GameScore(320), nickname="Ник")
+p4 = Player(scores=GameScore(530), nickname="Саманта")
+
+print(p1 == p2) # False
+print(p1 < p2) # True
+print(p1 > p2) # False
+
+# Не красиво, но технически будет работать
+print(p1.scores.score > p2.scores.score)
+
+players = [p1, p2, p3, p4]
+
+# == от is?
+
+players.sort(reverse=True)
+print(players[:3]) # ТОП3 игроков
+
+players.sort(key=lambda player: player.nickname)
+print(players)
+
+# Создам баланс
+gs = GameScore(500)
+
+# Добавлю Бобу
+p2 += gs
+
+# Сортирую игроков и вывожу ТОП3 игроков
+players.sort(reverse=True)
+print(players[:3]) # ТОП3 игроков
+
+if p2:
+    # Сюда попаду ЕСЛИ баланс игрока НЕ 0
+    pass
+
+active_players = [player for player in players if player]
