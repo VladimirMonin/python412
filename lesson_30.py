@@ -31,13 +31,20 @@ COMPARISON Operations / Операции сравнения:
 - __le__(self, other)     # Less Than or Equal to (<=) / Меньше или равно
 - __ge__(self, other)     # Greater Than or Equal to (>=) / Больше или равно
 """
+# Собственное исключение GameSroceOperationError - для обработки ошибок при работе с математическими операторами
+
+class GameScoreMathError(Exception):
+    pass
 
 
 # Класс GameScore (игровые очки) - для демонстрации работы математических операторов
 
 class GameScore:
+    MIN_SCORE = 0
+    MAX_SCORE = 1000
+
     def __init__(self, score):
-        self.score = score
+        self.score = self._validate_score_limit(score)
 
     def __str__(self):
         return f'Ваши очки: {self.score}'
@@ -45,24 +52,38 @@ class GameScore:
     def __repr__(self):
         return f'GameScore(score="{self.score}")'
 
-    def __iadd__(self, other):
-        self.score += other.score
+    def _validate_other_type(self, other):
+        if not isinstance(other, GameScore):
+            raise TypeError(f"Нельзя сложить GameScore и {type(other)}")
+
+    def _validate_score_limit(self, score):
+        if not self.MIN_SCORE <= score <= self.MAX_SCORE:
+            raise GameScoreMathError(f"Нельзя установить очки вне диапазона от {self.MIN_SCORE} до {self.MAX_SCORE}")
+        else:
+            return score
+
+    def __iadd__(self, other: "GameScore"):
+        self._validate_other_type(other)
+        new_score = self.score + other.score
+        self.score = self._validate_score_limit(new_score)
         return self
 
-    def __add__(self, other):
+    def __isub__(self, other: "GameScore"):
+        self._validate_other_type(other)
+        new_score = self.score - other.score
+        self.score = self._validate_score_limit(new_score)
+        return self
+
+    def __add__(self, other: "GameScore"):
         return self.__iadd__(other)
 
-    def __sub__(self, other):
+    def __sub__(self, other: "GameScore"):
         return self.__isub__(other)
-
-    def __isub__(self, other):
-        self.score -= other.score
-        return self
 
 my_score = GameScore(100)
 print(my_score)
 
 new_score = GameScore(50)
 
-my_score += new_score
+my_score -= new_score
 print(my_score)
