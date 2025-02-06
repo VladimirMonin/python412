@@ -6,113 +6,404 @@
     - default factory
     - ...
 
+
+Напишем Класс - итератор, который будет настраиваться и возвращать
+чанки длиной CHUNK_LENTH из LESSON_FILE
+
+Который является массивом объектов JSON:
+
+[
+    {
+        "timestamp": [
+            65.58,
+            66.18
+        ],
+        "text": " you Итак, давайте начнем с домашнего задания. Домашнее задание, я думаю, что кто-то из вас, наверное, уже заглянул, посмотрел. Вообще, это серия, целая серия, но вам досталась последняя. С другими группами мы пишем игру в города. Она пишет, что сначала в виде скрипта на Python, потом ребята рефакторят ее на функции, а потом ребята ее рефакторят на OOP."
+    }.....
+
+
+Каждый чанк будет экземпляром датакласса LessonChunk
+- start_time: int
+- finish_time: int
+- text: str
 """
 
 from dataclasses import dataclass, field
-
-
-# field
-"""
-field - позволяет настроить отдельное поле класса
-comparare=False - отключает сравнение по этому полю
-"""
-
-"""
-  {
-    "coords": {
-      "lat": "50.38333",
-      "lon": "103.28333"
-    },
-    "district": "Сибирский",
-    "name": "Закаменск",
-    "population": 11191,
-    "subject": "Бурятия"
-  },
-"""
-# 1. Импорт городов и создание датакласса
-
-from data.cities import cities_list
-
-
-@dataclass(order=True)
-class City:
-    name: str = field(compare=False)
-    population: int
-    subject: str = field(compare=False)
-    district: str = field(compare=False)
-    lat: float = field(compare=False)
-    lon: float = field(compare=False)
-    is_used: bool = field(default=False, compare=False)
-    is_million: bool = field(default=False, compare=False, repr=False)
-
-    def __post_init__(self):
-        if self.population >= 1_000_000:
-            self.is_million = True
-
-    def __str__(self):
-        return f'Город: {self.name}. Население: {self.population} человек. Миллионник: {'Да' if self.is_million else 'Нет'}'
-    
-    def get_dict(self):
-        return {
-            "name": self.name,
-            "population": self.population,
-            "subject": self.subject,
-            "district": self.district,
-            "lat": self.lat,
-            "lon": self.lon,
-        }
-    
-# 2. Создание списка экземпляров
-
-cities = []
-
-for city in cities_list:
-    # Если бы у нас была подходящая структура данных... Но они разные)
-    # cities.append(City(**city))
-
-    instance = City(
-        name=city["name"],
-        population=city["population"],
-        subject=city["subject"],
-        district=city["district"],
-        lat=city["coords"]["lat"],
-        lon=city["coords"]["lon"],
-    )
-    cities.append(instance)
-
-print(cities[0])
-
-print(list(filter(lambda city: city.is_million, cities)))
-millions_city = [city for city in cities if city.is_million]
-
-print(list(filter(lambda city: city.population > 1000000, cities)))
-
-# Сортируем список городов
-cities.sort(reverse=True)
-print(cities[:10])
-
-# 4. Список словарей из экземпляров City
-cities_list_dicts = [city.get_dict() for city in cities]
-
-# 5. Скинем это в JSON
 import json
 
-# 6. Запишем в файл
-with open('cities.json', 'w', encoding="utf-8") as f:
-    json.dump(cities_list_dicts, f, ensure_ascii=False, indent=4)
+LESSON_FILE = "lesson_30_data.json"
+CHUNK_LENTH = 5000
 
-# 7. Прочитаем из файла
-with open('cities.json', 'r', encoding="utf-8") as f:
-    cities_from_json = json.load(f)
+@dataclass(order=True)
+class LessonChunk:
+    start_time: int
+    finish_time: int = field(compare=False)
+    text: str = field(compare=False)
 
-# 8. Производим десериализацию 
-cities_obj = [City(**city) for city in cities_from_json]
-# Что происходит в распаковке **
-# City(
-#         name = "Высоцк",
-#         population = 1074,
-#         subject = "Ленинградская область",
-#         district = "Северо-Западный",
-#         lat = 60.625604,
-#         lon = 28.568277 
-# )
+class LessonReader:
+    def __init__(self, file_path: str, chunk_length: int = CHUNK_LENTH):
+        self.file_path = file_path
+        self.chunk_length = chunk_length
+        self.file_data = self.__read_json()
+        self.buffer = []
+
+    def __read_json(self):
+        with open(self.file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data
+    
+    def __prepare_chunk(self):
+        if not self.file_data:
+            return None
+        
+        start_time = self.file_data[0]['timestamp'][0]
+        current_text = ""
+        
+        while self.file_data and len(current_text) < self.chunk_length:
+            chunk_data = self.file_data.pop(0)
+            current_text += chunk_data['text']
+            finish_time = chunk_data['timestamp'][1]
+            
+            # Сохраняем в буфер, если взяли лишнего
+            if len(current_text) > self.chunk_length:
+                remaining_text = current_text[self.chunk_length:]
+                current_text = current_text[:self.chunk_length]
+                self.file_data.insert(0, {
+                    'timestamp': [finish_time, finish_time],
+                    'text': remaining_text
+                })
+        
+        return LessonChunk(
+            start_time=start_time,
+            finish_time=finish_time,
+            text=current_text
+        )
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        chunk = self.__prepare_chunk()
+        if chunk is None:
+            raise StopIteration
+        return chunk
+
+# Тесты
+if __name__ == "__main__":
+    reader = LessonReader(LESSON_FILE)
+    
+    # Тест 1: Проверка длины чанков
+    for i, chunk in enumerate(reader, 1):
+        print(f"Чанк {i}:")
+        print(f"Начало: {chunk.start_time}")
+        print(f"Конец: {chunk.finish_time}")
+        print(f"Длина текста: {len(chunk.text)}")
+        print(f"Первые 50 символов: {chunk.text[:50]}")
+        print("-" * 50)
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
