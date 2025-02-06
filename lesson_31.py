@@ -34,376 +34,67 @@ import json
 LESSON_FILE = "lesson_30_data.json"
 CHUNK_LENTH = 5000
 
+
 @dataclass(order=True)
 class LessonChunk:
     start_time: int
     finish_time: int = field(compare=False)
     text: str = field(compare=False)
 
+    def format_time(self, seconds):
+        if seconds is None:
+            return "конец записи"
+        minutes, seconds = divmod(int(seconds), 60)
+        hours, minutes = divmod(minutes, 60)
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+
 class LessonReader:
     def __init__(self, file_path: str, chunk_length: int = CHUNK_LENTH):
         self.file_path = file_path
         self.chunk_length = chunk_length
         self.file_data = self.__read_json()
-        self.buffer = []
 
     def __read_json(self):
         with open(self.file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
         return data
-    
+
     def __prepare_chunk(self):
         if not self.file_data:
             return None
-        
-        start_time = self.file_data[0]['timestamp'][0]
+
+        start_time = self.file_data[0]["timestamp"][0]
         current_text = ""
-        
+        finish_time = None
+
         while self.file_data and len(current_text) < self.chunk_length:
             chunk_data = self.file_data.pop(0)
-            current_text += chunk_data['text']
-            finish_time = chunk_data['timestamp'][1]
-            
-            # Сохраняем в буфер, если взяли лишнего
-            if len(current_text) > self.chunk_length:
-                remaining_text = current_text[self.chunk_length:]
-                current_text = current_text[:self.chunk_length]
-                self.file_data.insert(0, {
-                    'timestamp': [finish_time, finish_time],
-                    'text': remaining_text
-                })
-        
+            current_text += chunk_data["text"]
+            finish_time = chunk_data["timestamp"][1]
+
         return LessonChunk(
-            start_time=start_time,
-            finish_time=finish_time,
-            text=current_text
+            start_time=start_time, finish_time=finish_time, text=current_text
         )
-    
+
     def __iter__(self):
         return self
-    
+
     def __next__(self):
         chunk = self.__prepare_chunk()
         if chunk is None:
             raise StopIteration
         return chunk
 
+
 # Тесты
 if __name__ == "__main__":
     reader = LessonReader(LESSON_FILE)
-    
-    # Тест 1: Проверка длины чанков
+
     for i, chunk in enumerate(reader, 1):
         print(f"Чанк {i}:")
-        print(f"Начало: {chunk.start_time}")
-        print(f"Конец: {chunk.finish_time}")
+        print(f"Начало: {chunk.format_time(chunk.start_time)}")
+        print(f"Конец: {chunk.format_time(chunk.finish_time)}")
         print(f"Длина текста: {len(chunk.text)}")
         print(f"Первые 50 символов: {chunk.text[:50]}")
         print("-" * 50)
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
