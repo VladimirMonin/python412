@@ -34,14 +34,14 @@ comparare=False - отключает сравнение по этому полю
 from data.cities import cities_list
 
 
-@dataclass
+@dataclass(order=True)
 class City:
-    name: str
+    name: str = field(compare=False)
     population: int
-    subject: str
-    district: str
-    lat: float
-    lon: float
+    subject: str = field(compare=False)
+    district: str = field(compare=False)
+    lat: float = field(compare=False)
+    lon: float = field(compare=False)
     is_used: bool = field(default=False, compare=False)
     is_million: bool = field(default=False, compare=False, repr=False)
 
@@ -51,6 +51,16 @@ class City:
 
     def __str__(self):
         return f'Город: {self.name}. Население: {self.population} человек. Миллионник: {'Да' if self.is_million else 'Нет'}'
+    
+    def get_dict(self):
+        return {
+            "name": self.name,
+            "population": self.population,
+            "subject": self.subject,
+            "district": self.district,
+            "lat": self.lat,
+            "lon": self.lon,
+        }
     
 # 2. Создание списка экземпляров
 
@@ -71,3 +81,38 @@ for city in cities_list:
     cities.append(instance)
 
 print(cities[0])
+
+print(list(filter(lambda city: city.is_million, cities)))
+millions_city = [city for city in cities if city.is_million]
+
+print(list(filter(lambda city: city.population > 1000000, cities)))
+
+# Сортируем список городов
+cities.sort(reverse=True)
+print(cities[:10])
+
+# 4. Список словарей из экземпляров City
+cities_list_dicts = [city.get_dict() for city in cities]
+
+# 5. Скинем это в JSON
+import json
+
+# 6. Запишем в файл
+with open('cities.json', 'w', encoding="utf-8") as f:
+    json.dump(cities_list_dicts, f, ensure_ascii=False, indent=4)
+
+# 7. Прочитаем из файла
+with open('cities.json', 'r', encoding="utf-8") as f:
+    cities_from_json = json.load(f)
+
+# 8. Производим десериализацию 
+cities_obj = [City(**city) for city in cities_from_json]
+# Что происходит в распаковке **
+# City(
+#         name = "Высоцк",
+#         population = 1074,
+#         subject = "Ленинградская область",
+#         district = "Северо-Западный",
+#         lat = 60.625604,
+#         lon = 28.568277 
+# )
