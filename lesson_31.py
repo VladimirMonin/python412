@@ -45,7 +45,13 @@ class City:
     is_used: bool = field(default=False, compare=False)
     is_million: bool = field(default=False, compare=False, repr=False)
 
+    def __post_init__(self):
+        if self.population >= 1_000_000:
+            self.is_million = True
 
+    def __str__(self):
+        return f'Город: {self.name}. Население: {self.population} человек. Миллионник: {'Да' if self.is_million else 'Нет'}'
+    
 # 2. Создание списка экземпляров
 
 cities = []
@@ -64,4 +70,4 @@ for city in cities_list:
     )
     cities.append(instance)
 
-print(cities)
+print(cities[0])
