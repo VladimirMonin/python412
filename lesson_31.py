@@ -10,35 +10,58 @@
 
 from dataclasses import dataclass, field
 
+
 # field
 """
 field - позволяет настроить отдельное поле класса
 comparare=False - отключает сравнение по этому полю
 """
 
+"""
+  {
+    "coords": {
+      "lat": "50.38333",
+      "lon": "103.28333"
+    },
+    "district": "Сибирский",
+    "name": "Закаменск",
+    "population": 11191,
+    "subject": "Бурятия"
+  },
+"""
+# 1. Импорт городов и создание датакласса
+
+from data.cities import cities_list
+
+
 @dataclass
-class Employee:
-    # Автоматически генерируемый __init__
-    first_name: str = "Сергей"
-    last_name: str = "Сергеев"
-    hobbies: list[str] = field(default_factory=list)
-    age: int = field(default=18, compare=False)
-    work_week: tuple= ("понедельник", "вторник", "среда", "четверг", "пятница")
+class City:
+    name: str
+    population: int
+    subject: str
+    district: str
+    lat: float
+    lon: float
+    is_used: bool = field(default=False, compare=False)
+    is_million: bool = field(default=False, compare=False, repr=False)
 
-employee = Employee("Николай", "Соболев", ["футбол", "программирование"], 35)
-employee2 = Employee(first_name="Елена", last_name="Петрова", age=28, hobbies=["чтение", "SQL"])
-employee3 = Employee("Петр", "Петров")
 
-# Автоматически генерируемый __repr__
-print(employee)
-print(employee2)
-print(employee3)
+# 2. Создание списка экземпляров
 
-employee3.work_week = ["хлебушек"]
-# Employee(first_name='Николай', last_name='Соболев', age=35, hobbies=['футбол', 'программирование'])
-serialize_employee = repr(employee)
-print(serialize_employee)
-deserialize_employee = eval(serialize_employee)
+cities = []
 
-# Автоматически генерируемый __eq__ - сравнение на равенство по всем полям
-print(f'{employee == employee2 = }')
+for city in cities_list:
+    # Если бы у нас была подходящая структура данных... Но они разные)
+    # cities.append(City(**city))
+
+    instance = City(
+        name=city["name"],
+        population=city["population"],
+        subject=city["subject"],
+        district=city["district"],
+        lat=city["coords"]["lat"],
+        lon=city["coords"]["lon"],
+    )
+    cities.append(instance)
+
+print(cities)
