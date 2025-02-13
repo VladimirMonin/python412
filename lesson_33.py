@@ -10,32 +10,47 @@
 
 from abc import ABC, abstractmethod
 
-class AbstractRequest(ABC):
+class OnlineShop:
+    def __init__(self, payment_system: "PaymentSystem"):
+        self.payment_system = payment_system
+
+    def buy(self, amount: int) -> None:
+        self.payment_system.pay(amount)
+
+    def get_document(self, id_payment: int) -> None:
+         self.payment_system.get_document(id_payment)
     
+class PaymentSystem(ABC):
     @abstractmethod
-    def make_request(self)-> str:
+    def pay(self, amount: int) -> None:
+        pass
+
+    @abstractmethod
+    def get_document(self, id_payment: int) -> None:
         pass
 
 
-class RealRequest(AbstractRequest):
-    
-    def make_request(self)-> str:
-        return "Реальный запрос"
+class YandexPayAdapter(PaymentSystem):
+    def pay(self, amount: int) -> None:
+        print(f"Оплата {amount} рублей через Яндекс.Кошелек")
+
+    def get_document(self, id_payment: int) -> None:
+        print(f"Документ оплаты {id_payment}")
 
 
-class ProxyRequest(AbstractRequest):
+class RoboPayAdapter(PaymentSystem):
+    def pay(self, amount: int) -> None:
+        print(f"Оплата {amount} рублей через Робокасса")
 
-    def __init__(self, real_request: AbstractRequest):
-        self.real_request = real_request
-        
-    def make_request(self)-> str:
-        self.__additional_logic()
-        return self.real_request.make_request()
+    def get_document(self, id_payment: int) -> None:
+        print(f"Документ оплаты {id_payment}")
 
-    def __additional_logic(self):
-        print("Логика перед запросом")
 
 # TEST
-request = RealRequest()
-proxy_request = ProxyRequest(request)
-print(proxy_request.make_request())
+shop = OnlineShop(YandexPayAdapter())
+shop.buy(100)
+shop.get_document(1)
+
+shop = OnlineShop(RoboPayAdapter())
+shop.buy(100)
+shop.get_document(1)
