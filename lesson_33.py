@@ -6,51 +6,59 @@
 - Декоратор
 - Посредник (Proxy)
 - Адаптер (Apapter)
+- Мост (Bridge)
 """
 
 from abc import ABC, abstractmethod
 
-class OnlineShop:
-    def __init__(self, payment_system: "PaymentSystem"):
-        self.payment_system = payment_system
 
-    def buy(self, amount: int) -> None:
-        self.payment_system.pay(amount)
-
-    def get_document(self, id_payment: int) -> None:
-         self.payment_system.get_document(id_payment)
-    
-class PaymentSystem(ABC):
+# Интерфейс реализации графического API
+class Renderer(ABC):
     @abstractmethod
-    def pay(self, amount: int) -> None:
-        pass
-
-    @abstractmethod
-    def get_document(self, id_payment: int) -> None:
+    def render_circle(self, x, y, radius):
         pass
 
 
-class YandexPayAdapter(PaymentSystem):
-    def pay(self, amount: int) -> None:
-        print(f"Оплата {amount} рублей через Яндекс.Кошелек")
-
-    def get_document(self, id_payment: int) -> None:
-        print(f"Документ оплаты {id_payment}")
+class OpenGLRenderer(Renderer):
+    def render_circle(self, x, y, radius):
+        print(f"Рендер OpenGL: круг с центром ({x},{y}) и радиусом {radius}")
 
 
-class RoboPayAdapter(PaymentSystem):
-    def pay(self, amount: int) -> None:
-        print(f"Оплата {amount} рублей через Робокасса")
-
-    def get_document(self, id_payment: int) -> None:
-        print(f"Документ оплаты {id_payment}")
+class DirectXRenderer(Renderer):
+    def render_circle(self, x, y, radius):
+        print(f"Рендер DirectX: круг с центром ({x},{y}) и радиусом {radius}")
 
 
-# TEST
-shop = OnlineShop(YandexPayAdapter())
-shop.buy(100)
-shop.get_document(1)
+# Абстракция
+class Shape(ABC):
+    def __init__(self, renderer: Renderer):
+        self.renderer = renderer
 
-shop = OnlineShop(RoboPayAdapter())
-shop.buy(100)
-shop.get_document(1)
+    @abstractmethod
+    def draw(self):
+        pass
+
+
+class Circle(Shape):
+    def __init__(self, renderer: Renderer, x, y, radius):
+        super().__init__(renderer)
+        self.x = x
+        self.y = y
+        self.radius = radius
+
+    def draw(self):
+        self.renderer.render_circle(self.x, self.y, self.radius)
+
+
+# Использование
+if __name__ == "__main__":
+    opengl = OpenGLRenderer()
+    directx = DirectXRenderer()
+
+    # Рисуем круг с использованием OpenGL
+    circle1 = Circle(opengl, 10, 20, 15)
+    circle1.draw()
+
+    # Рисуем круг с использованием DirectX
+    circle2 = Circle(directx, 30, 40, 25)
+    circle2.draw()
