@@ -17,47 +17,83 @@
 
 from abc import ABC, abstractmethod
 
-# СОСТОЯНИЯ
-
-class KitchenState(ABC):
+class Command(ABC):
+    """Абстрактный класс команды"""
     @abstractmethod
-    def run(self):
+    def execute(self):
         pass
 
-class Cooking(KitchenState):
-    def run(self):
-        print("Приготовление блюда")
+class Dog:
+    """
+    Получатель команд (Receiver)
+    Класс, который непосредственно выполняет действия
+    """
+    def sit(self):
+        print("Собака села")
+    
+    def roll(self):
+        print("Собака перекатилась")
+    
+    def bark(self):
+        print("Гав-гав!")
 
-class Washing(KitchenState):
-    def run(self):
-        print("Мытье посуды")
+class SitCommand(Command):
+    """Конкретная команда для действия 'сидеть'"""
+    def __init__(self, dog: Dog):
+        self._dog = dog
+    
+    def execute(self):
+        self._dog.sit()
 
-class LookingRefrigerator(KitchenState):
-    def run(self):
-        print("Задумчиво смотрим в холодильник")
+class RollCommand(Command):
+    """Конкретная команда для действия 'перекатиться'"""
+    def __init__(self, dog: Dog):
+        self._dog = dog
+    
+    def execute(self):
+        self._dog.roll()
 
-# КОНТЕКСТ
+class BarkCommand(Command):
+    """Конкретная команда для действия 'лаять'"""
+    def __init__(self, dog: Dog):
+        self._dog = dog
+    
+    def execute(self):
+        self._dog.bark()
 
-class Kitchen:
+class Owner:
+    """
+    Инициатор (Invoker)
+    Хозяин собаки, который отдает команды
+    """
     def __init__(self):
-        self.state: KitchenState = LookingRefrigerator()
+        self._command = None
+    
+    def set_command(self, command: Command):
+        self._command = command
+    
+    def execute_command(self):
+        self._command.execute()
 
-    def set_state(self, state: KitchenState):
-        if not isinstance(state, KitchenState):
-            raise TypeError("Передано неверное состояние")
-        self.state = state
-
-    def run(self):
-        self.state.run()
-
-# ИСПОЛЬЗОВАНИЕ
-
+# Пример использования
 if __name__ == "__main__":
-    kitchen = Kitchen()
-    kitchen.run() # Задумчиво смотрим в холодильник
-    kitchen.set_state(Cooking())
-    kitchen.run() # Приготовление блюда
-    kitchen.set_state(Washing())
-    kitchen.run() # Мытье посуды
-    kitchen.set_state(LookingRefrigerator())
-    kitchen.run() # Задумчиво смотрим в холодильник
+    # Создаем получателя
+    dog = Dog()
+    
+    # Создаем команды
+    sit = SitCommand(dog)
+    roll = RollCommand(dog)
+    bark = BarkCommand(dog)
+    
+    # Создаем вызывающего
+    owner = Owner()
+    
+    # Выполняем команды
+    owner.set_command(sit)
+    owner.execute_command()  # Собака села
+    
+    owner.set_command(roll)
+    owner.execute_command()  # Собака перекатилась
+    
+    owner.set_command(bark)
+    owner.execute_command()  # Гав-гав!
