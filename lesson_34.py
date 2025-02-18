@@ -13,51 +13,97 @@
 
 """
 
+# Паттерн Состояние на примере музыкального плеера.
+
 from abc import ABC, abstractmethod
-import random
 
-class FigthingStrategy(ABC):
 
+# Абстрактное состояние
+
+class PlayerState(ABC):
     @abstractmethod
-    def fight(self):
+    def play(self) -> "PlayerState":
         pass
 
-# Критический пинок
-class CriticalPunch(FigthingStrategy):
-    def fight(self):
-        print(f'Критический пинок лапой с уроном {random.randint(20, 50)}')
+    @abstractmethod
+    def stop(self) -> "PlayerState":
+        pass
+
+    @abstractmethod
+    def pause(self) -> "PlayerState":
+        pass
 
 
-# Слабый удар
-class WeakPunch(FigthingStrategy):
-    def fight(self):
-        print(f'Слабый удар лапой с уроном {random.randint(1, 10)}')
+# Конкретные состояния
+class PlayState(PlayerState):
+    def play(self):
+        print(f'{self.__class__.__name__} - Проигрывание музыки')
+        return self
 
-# Боевой мяу
-class BattleMeow(FigthingStrategy):
-    def fight(self):
-        print(f'Боевой мяу без урона. Но очень страшно!')
+    def stop(self):
+        print(f'{self.__class__.__name__} - Остановка музыки. Переход в состояние StopState')
+        return StopState()
 
-# Кот
-class Cat:
-    def __init__(self, name):
-        self.name = name
-        self.strategy: FigthingStrategy = BattleMeow()
+    def pause(self):
+        print(f'{self.__class__.__name__} - Пауза. Переход в состояние PauseState')
+        return PauseState()
 
-    def fight(self):
-        print(f'{self.name} атакует:')
-        self.strategy.fight()
 
-    def set_strategy(self, strategy: FigthingStrategy):
-        if not isinstance(strategy, FigthingStrategy):
-            raise ValueError('Коты себя так не ведут!')
-        self.strategy = strategy
+class StopState(PlayerState):
+    def play(self):
+        print(f'{self.__class__.__name__} - Проигрывание музыки. Переход в состояние PlayState')
+        return PlayState()
 
-if __name__ == '__main__':
-    cat = Cat('Барсик')
-    cat.fight()
-    test = "Помурчать"
-    # cat.set_strategy(test)
-    cat.set_strategy(WeakPunch())
-    cat.fight()
+    def stop(self):
+        print(f'{self.__class__.__name__} - Музыка уже остановлена')
+        return self
 
+    def pause(self):
+        print(f'{self.__class__.__name__} - Музыка остановлена. Переход в состояние PauseState')
+        return StopState()
+    
+class PauseState(PlayerState):
+    def play(self):
+        print(f'{self.__class__.__name__} - Проигрывание музыки. Переход в состояние PlayState')
+        return PlayState()
+
+    def stop(self):
+        print(f'{self.__class__.__name__} - Остановка музыки. Переход в состояние StopState')
+        return StopState()
+
+    def pause(self):
+        print(f'{self.__class__.__name__} - Музыка на паузе')
+        return self
+
+
+# Контекст
+class Player:
+    def __init__(self):
+        self.state: PlayerState = StopState()
+
+    def change_state(self, state: PlayerState):
+        self.state = state
+
+    def play(self) -> None:
+        self.change_state(self.state.play())
+
+    def stop(self) -> None:
+        self.change_state(self.state.stop())
+
+    def pause(self) -> None:
+        self.change_state(self.state.pause())
+
+
+if __name__ == "__main__":
+    player = Player() 
+    player.play() #  StopState - Проигрывание музыки. Переход в состояние PlayState
+    player.pause() #  PlayState - Пауза. Переход в состояние PauseState
+    player.play() # PauseState - Проигрывание музыки. Переход в состояние PlayState
+    player.stop() # PlayState - Остановка музыки. Переход в состояние StopState
+    player.stop() #  StopState - Музыка уже остановлена
+    player.pause() # StopState - Музыка остановлена. Переход в состояние PauseState
+    player.play() #  StopState - Проигрывание музыки. Переход в состояние PlayState
+    player.stop() # PlayState - Остановка музыки. Переход в состояние StopState
+    player.play() #  StopState - Проигрывание музыки. Переход в состояние PlayState
+    player.play() #  PlayState - Проигрывание музыки
+    player.stop() # PlayState - Остановка музыки. Переход в состояние StopState
