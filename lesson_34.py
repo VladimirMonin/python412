@@ -27,25 +27,28 @@
 from abc import ABC, abstractmethod
 
 class BotCommand(ABC):
+    def __init__(self, coin_name: str):
+        self.coin_name = coin_name
+
     @abstractmethod
     def execute(self):
         pass
 
 class BuyCommand(BotCommand):
     def execute(self):
-        print("Покупаем монету")
+        print(f"Покупаем монету {self.coin_name}")
 
 class SellCommand(BotCommand):
     def execute(self):
-        print("Продаем монету")
+        print(f"Продаем монету {self.coin_name}")
 
 class GetPriceCommand(BotCommand):
     def execute(self):
-        print("Запрашиваем цену монеты")
+        print(f"Запрашиваем цену монеты {self.coin_name}")
 
 class SetPriceCommand(BotCommand):
     def execute(self):
-        print("Выставляем уведомление цены монеты")
+        print(f"Выставляем уведомление цены монеты {self.coin_name}")
 
 # РАБОТА С КОМАНДАМИ
 # ДВА КЛАССА
@@ -70,26 +73,26 @@ class ExchangeAPI:
     def __init__(self):
         self.bot = Bot()
 
-    def buy(self):
-        self.bot.execute_commands(BuyCommand())
+    def buy(self, coin_name: str):
+        self.bot.execute_commands(BuyCommand(coin_name))
 
-    def sell(self):
-        self.bot.execute_commands(SellCommand())
+    def sell(self, coin_name: str):
+        self.bot.execute_commands(SellCommand(coin_name))
 
-    def get_price(self):
-        self.bot.execute_commands(GetPriceCommand())
+    def get_price(self, coin_name: str):
+        self.bot.execute_commands(GetPriceCommand(coin_name))
 
-    def set_price(self):
-        self.bot.execute_commands(SetPriceCommand())
+    def set_price(self, coin_name: str):
+        self.bot.execute_commands(SetPriceCommand(coin_name))
 
 # ИСПОЛЬЗОВАНИЕ
 if __name__ == "__main__":
     api = ExchangeAPI()
-    api.buy()
-    api.sell()
-    api.get_price()
-    api.set_price()
+    api.buy("BTC")
+    api.sell("ETH")
+    api.get_price("DOGE")
+    api.set_price("XRP")
 
-    print("История команд:")
+    print("\nИстория команд:")
     for command in api.bot.history:
-        print(command)
+        print(f"{command.__class__.__name__}: {command.coin_name}")
