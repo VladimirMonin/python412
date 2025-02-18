@@ -14,85 +14,104 @@
 """
 """
 Описание примера.
-Пишем пример паттерна Command - Команда.
-Простой торговый бот
+Пишем пример паттерна Наблюдатель.
 
-Команды:
-- Купить монету
-- Продать монету
-- Запросить цену монеты
-- Выставить уведомление цены монеты
+Классы:
+Хозяин - Owner
+Кот - Cat
+Пес - Dog
+Хомяк - Hamster
+
+Хозяин режет мясо, рыбу и орехи. Каждый наблюдатель (кот, пес, хомяк) реагирует на это по-своему.
+Есть список наблюдателей, которые реагируют на действия хозяина.
 """
 
 from abc import ABC, abstractmethod
 
-class BotCommand(ABC):
-    def __init__(self, coin_name: str):
-        self.coin_name = coin_name
+class  AbstractPet(ABC):
+    def __init__(self, name):
+        self.name = name
+        self.favorite_food = [""]
+        self.current_food = ""
 
     @abstractmethod
-    def execute(self):
+    def update(self, message):
         pass
 
-class BuyCommand(BotCommand):
-    def execute(self):
-        print(f"Покупаем монету {self.coin_name}")
+    @abstractmethod
+    def reaction(self):
+        pass
 
-class SellCommand(BotCommand):
-    def execute(self):
-        print(f"Продаем монету {self.coin_name}")
+class Cat(AbstractPet):
+    def update(self, message):
+        print(f"Кот получил сообщение: {message}")
+        self.current_food = message.lower()
+        self.reaction()
 
-class GetPriceCommand(BotCommand):
-    def execute(self):
-        print(f"Запрашиваем цену монеты {self.coin_name}")
+    def reaction(self):
+        if any(food.lower() in self.current_food for food in self.favorite_food):
+            print(f"{self.name} мурлычет")
+        else:
+            print(f"{self.name} игнорирует")
 
-class SetPriceCommand(BotCommand):
-    def execute(self):
-        print(f"Выставляем уведомление цены монеты {self.coin_name}")
+class Dog(AbstractPet):
+    def update(self, message):
+        print(f"Пёс получил сообщение: {message}")
+        self.current_food = message.lower()
+        self.reaction()
 
-# РАБОТА С КОМАНДАМИ
-# ДВА КЛАССА
-"""
-Эмуляция API биржи
-и торгового бота
-"""
+    def reaction(self):
+        if any(food.lower() in self.current_food for food in self.favorite_food):
+            print(f"{self.name} виляет хвостом")
+        else:
+            print(f"{self.name} всё равно заинтересованно смотрит")
 
-class Bot:
+class Hamster(AbstractPet):
+    def update(self, message):
+        print(f"Хомяк получил сообщение: {message}")
+        self.current_food = message.lower()
+        self.reaction()
+
+    def reaction(self):
+        if any(food.lower() in self.current_food for food in self.favorite_food):
+            print(f"{self.name} смотрит прожигающим душу взглядом")
+        else:
+            print(f"{self.name} ему пофиг")
+
+class Owner:
     def __init__(self):
-        self.history: list[BotCommand] = []
+        self.pets = []
 
-    def _add_to_history(self, command: BotCommand):
-        self.history.append(command)
+    def add_pet(self, pet: AbstractPet):
+        self.pets.append(pet)
 
-    def execute_commands(self, command: BotCommand):
-        command.execute()
-        self._add_to_history(command)
+    def remove_pet(self, pet: AbstractPet):
+        self.pets.remove(pet)
 
+    def notify_pets(self, message):
+        for pet in self.pets:
+            pet.update(message)
 
-class ExchangeAPI:
-    def __init__(self):
-        self.bot = Bot()
+    def cut_fish(self):
+        self.notify_pets("рыба")
 
-    def buy(self, coin_name: str):
-        self.bot.execute_commands(BuyCommand(coin_name))
+    def cut_meat(self):
+        self.notify_pets("мясо")
 
-    def sell(self, coin_name: str):
-        self.bot.execute_commands(SellCommand(coin_name))
+    def cut_nuts(self):
+        self.notify_pets("орехи")
 
-    def get_price(self, coin_name: str):
-        self.bot.execute_commands(GetPriceCommand(coin_name))
-
-    def set_price(self, coin_name: str):
-        self.bot.execute_commands(SetPriceCommand(coin_name))
-
-# ИСПОЛЬЗОВАНИЕ
 if __name__ == "__main__":
-    api = ExchangeAPI()
-    api.buy("BTC")
-    api.sell("ETH")
-    api.get_price("DOGE")
-    api.set_price("XRP")
-
-    print("\nИстория команд:")
-    for command in api.bot.history:
-        print(f"{command.__class__.__name__}: {command.coin_name}")
+    owner = Owner()
+    cat = Cat("Барсик")
+    dog = Dog("Тузик")
+    hamster = Hamster("Хомяк")
+    owner.add_pet(cat)
+    owner.add_pet(dog)
+    owner.add_pet(hamster)
+    cat.favorite_food = ["рыба", "мясо"]
+    dog.favorite_food = ["мясо"]
+    hamster.favorite_food = ["орехи"]
+    owner.cut_fish()
+    owner.cut_meat()
+    owner.cut_nuts()
