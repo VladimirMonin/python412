@@ -12,88 +12,84 @@
 - Паттерн Chain of Responsibility - Цепочка обязанностей - способ организации кода, когда один объект передает обязанности другому объекту
 
 """
+"""
+Описание примера.
+Пишем пример паттерна Command - Команда.
+Простой торговый бот
 
-# Паттерн Состояние на примере нескольких разных действий на кухне
+Команды:
+- Купить монету
+- Продать монету
+- Запросить цену монеты
+- Выставить уведомление цены монеты
+"""
 
 from abc import ABC, abstractmethod
 
-class Command(ABC):
-    """Абстрактный класс команды"""
+class BotCommand(ABC):
     @abstractmethod
     def execute(self):
         pass
 
-class Dog:
-    """
-    Получатель команд (Receiver)
-    Класс, который непосредственно выполняет действия
-    """
-    def sit(self):
-        print("Собака села")
-    
-    def roll(self):
-        print("Собака перекатилась")
-    
-    def bark(self):
-        print("Гав-гав!")
-
-class SitCommand(Command):
-    """Конкретная команда для действия 'сидеть'"""
-    def __init__(self, dog: Dog):
-        self._dog = dog
-    
+class BuyCommand(BotCommand):
     def execute(self):
-        self._dog.sit()
+        print("Покупаем монету")
 
-class RollCommand(Command):
-    """Конкретная команда для действия 'перекатиться'"""
-    def __init__(self, dog: Dog):
-        self._dog = dog
-    
+class SellCommand(BotCommand):
     def execute(self):
-        self._dog.roll()
+        print("Продаем монету")
 
-class BarkCommand(Command):
-    """Конкретная команда для действия 'лаять'"""
-    def __init__(self, dog: Dog):
-        self._dog = dog
-    
+class GetPriceCommand(BotCommand):
     def execute(self):
-        self._dog.bark()
+        print("Запрашиваем цену монеты")
 
-class Owner:
-    """
-    Инициатор (Invoker)
-    Хозяин собаки, который отдает команды
-    """
+class SetPriceCommand(BotCommand):
+    def execute(self):
+        print("Выставляем уведомление цены монеты")
+
+# РАБОТА С КОМАНДАМИ
+# ДВА КЛАССА
+"""
+Эмуляция API биржи
+и торгового бота
+"""
+
+class Bot:
     def __init__(self):
-        self._command = None
-    
-    def set_command(self, command: Command):
-        self._command = command
-    
-    def execute_command(self):
-        self._command.execute()
+        self.history: list[BotCommand] = []
 
-# Пример использования
+    def _add_to_history(self, command: BotCommand):
+        self.history.append(command)
+
+    def execute_commands(self, command: BotCommand):
+        command.execute()
+        self._add_to_history(command)
+
+
+class ExchangeAPI:
+    def __init__(self):
+        self.bot = Bot()
+
+    def buy(self):
+        self.bot.execute_commands(BuyCommand())
+
+    def sell(self):
+        self.bot.execute_commands(SellCommand())
+
+    def get_price(self):
+        self.bot.execute_commands(GetPriceCommand())
+
+    def set_price(self):
+        self.bot.execute_commands(SetPriceCommand())
+
+# ИСПОЛЬЗОВАНИЕ
 if __name__ == "__main__":
-    # Создаем получателя
-    dog = Dog()
-    
-    # Создаем команды
-    sit = SitCommand(dog)
-    roll = RollCommand(dog)
-    bark = BarkCommand(dog)
-    
-    # Создаем вызывающего
-    owner = Owner()
-    
-    # Выполняем команды
-    owner.set_command(sit)
-    owner.execute_command()  # Собака села
-    
-    owner.set_command(roll)
-    owner.execute_command()  # Собака перекатилась
-    
-    owner.set_command(bark)
-    owner.execute_command()  # Гав-гав!
+    api = ExchangeAPI()
+    api.buy()
+    api.sell()
+    api.get_price()
+    api.set_price()
+
+    print("История команд:")
+    for command in api.bot.history:
+        print(command)
