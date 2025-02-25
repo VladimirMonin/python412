@@ -62,3 +62,46 @@ WHERE Year = (
     ORDER BY APPEARANCES DESC
     LIMIT 1
 );
+
+-- DISTINCT - уникальные значения
+SELECT DISTINCT Hair,
+FROM MarvelCharacters
+WHERE Hair IS NOT NULL;
+
+-- GROUP BY - группировка
+SELECT Hair,
+FROM MarvelCharacters
+WHERE Hair IS NOT NULL
+GROUP BY Hair;
+
+
+-- Count - количество
+SELECT Hair, Count(*)
+FROM MarvelCharacters
+WHERE Hair IS NOT NULL
+GROUP BY Hair;
+
+-- Давайте сделаем похожую выборку по столбцу identify
+
+SELECT identify, Count(*) AS total
+FROM MarvelCharacters
+GROUP BY identify
+ORDER BY total DESC;
+
+-- Сортировка по полу
+SELECT Sex, Count(*) AS total
+FROM MarvelCharacters
+GROUP BY Sex;
+
+-- Сделаем это же, но добудем самых популрных в каждой группе
+SELECT Sex, Count(*) AS total, Max(appearances) AS max_appearances, name
+FROM MarvelCharacters
+GROUP BY Sex;
+
+-- Группировка цвет глаз и персонажи с максимальным количеством появлений
+SELECT EYE, Min(appearances), Sum(appearances), Max(appearances), name
+FROM MarvelCharacters
+GROUP BY EYE
+HAVING Max(appearances) > 100;
+
+-- при наличии min и max по одному столбцу, NAME будет выведен той позиции, которая последняя в запросе
