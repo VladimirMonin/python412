@@ -48,14 +48,14 @@ SELECT name, SEX, appearances, year
 FROM MarvelCharacters
 WHERE SEX = "Genderfluid Characters" OR SEX = "Agender Characters"
 ORDER BY appearances DESC
-LIMIT 10
+LIMIT 10;
 
 
 SELECT name, SEX, appearances, year
 FROM MarvelCharacters
 WHERE SEX = "Genderfluid Characters" OR SEX = "Agender Characters"
 ORDER BY appearances DESC
-LIMIT 10
+LIMIT 10;
 
 -- 8. Два признака сортировки
 SELECT name, SEX, appearances, year
@@ -63,13 +63,13 @@ FROM MarvelCharacters
 WHERE SEX = "Genderfluid Characters"
     OR SEX = "Agender Characters" 
     AND appearances > 10
-ORDER BY SEX, appearances DESC
+ORDER BY SEX, appearances DESC;
 
 -- 9 Получим уникальный год, сортируем и получаем первую десятку
 SELECT DISTINCT year
 FROM MarvelCharacters
 ORDER BY year
-LIMIT 10
+LIMIT 10;
 
 -- 10. Мы увидели что минимальный год 1939 и можем посмотреть персонажей появившихся в период 1940 - 1945
 SELECT name, year, appearances
@@ -77,14 +77,14 @@ FROM MarvelCharacters
 WHERE year > 1939 
 AND year < 1946
 AND appearances > 20
-ORDER BY appearances DESC
+ORDER BY appearances DESC;
 
 -- 11. Такой же, но с использованием BETWEEN
 SELECT name, year, appearances
 FROM MarvelCharacters
 WHERE year BETWEEN 1940 AND 1945
 AND appearances > 20
-ORDER BY appearances DESC
+ORDER BY appearances DESC;
 
 
 -- 12. Поиск по шаблону
@@ -99,15 +99,18 @@ ORDER BY appearances DESC
 SELECT name, year, appearances
 FROM MarvelCharacters
 WHERE name LIKE '% man %'
-OR name LIKE '%-man %'
+OR name LIKE '%-man %';
 
 -- Выборка уникальных цветов глаз и волос
 SELECT DISTINCT eye, hair
-FROM MarvelCharacters
+FROM MarvelCharacters;
 
 -- Gold Eyes, Hazel Eyes, One Eye
 -- Yellow Hair, Red Hair, No Hair
 SELECT name, eye, hair, appearances
 FROM MarvelCharacters
 WHERE eye IN ('Gold Eyes', 'Hazel Eyes', 'One Eye')
-AND hair IN ('Yellow Hair', 'Red Hair', 'No Hair')
+AND hair IN ('Yellow Hair', 'Red Hair', 'No Hair');
+
+
+
