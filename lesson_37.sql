@@ -171,3 +171,31 @@ SELECT MAX(appearances) AS max_app,
 MIN(appearances) AS min_app,
 ROUND(AVG(appearances), 2) AS avg_app
 FROM AlignGroup
+
+-- Первые JOIN запросы. 
+-- name, year, appearances из MarvelCharacters
+-- color из EyeColor
+
+SELECT MarvelCharacters.name, MarvelCharacters.year, MarvelCharacters.appearances, EyeColor.color
+FROM MarvelCharacters
+JOIN EyeColor ON MarvelCharacters.eye_id = EyeColor.eye_id
+
+
+SELECT mc.name, mc.year, mc.appearances, ec.color, hc.color
+FROM MarvelCharacters AS mc
+JOIN EyeColor AS ec ON mc.eye_id = ec.eye_id
+JOIN HairColor AS hc ON mc.hair_id = hc.hair_id
+
+
+SELECT mc.name, mc.year, mc.appearances, ec.color, hc.color
+FROM MarvelCharacters AS mc
+JOIN EyeColor AS ec ON mc.eye_id = ec.eye_id
+JOIN HairColor AS hc ON mc.hair_id = hc.hair_id
+
+WHERE ec.color = 'Blue Eyes' AND hc.color = 'Blond Hair'
+
+
+--
+SELECT mc.name, mc.year, mc.appearances, ec.color
+FROM MarvelCharacters AS mc
+JOIN EyeColor AS ec ON mc.eye_id = ec.eye_id
