@@ -114,3 +114,60 @@ WITH Alians AS (
     AND name LIKE '%Earth%'
 )
 SELECT name, appearances FROM Alians
+
+
+-- COUNT - SUM - MIN - MAX - AVG
+
+-- Задача 1
+-- Найдите среднее количество появлений персонажей Marvel для каждого пола (SEX) и отсортируйте результаты по убыванию среднего значения.
+
+SELECT sex, round(avg(appearances), 2) AS avg_app
+FROM MarvelCharacters
+WHERE sex is not NULL
+GROUP BY sex
+ORDER BY avg_app DESC
+
+
+
+-- Задача 2
+-- Определите, сколько персонажей Marvel с каждым цветом волос (HAIR) появилось в каждом десятилетии (используйте деление года на 10 и умножение на 10 для определения десятилетия).
+
+
+SELECT 
+    HAIR,
+    (Year / 10) * 10 AS decade,
+    COUNT(*) AS character_count
+FROM MarvelCharacters
+WHERE HAIR IS NOT NULL
+AND decade IS NOT NULL
+GROUP BY HAIR, decade
+ORDER BY decade, character_count DESC;
+
+
+-- Задача 3. Сделаем декады, сгруппируемся по ним и вывыдем самого популярного персонажа декады
+SELECT (Year / 10) * 10 AS decade, name, max(appearances)
+FROM MarvelCharacters
+WHERE year is not null and decade is not null
+GROUP BY decade
+ORDER BY decade
+
+-- Задача 4. Для мировозрения выведем лидера и год появления
+SELECT name, year, ALIGN, max(appearances) as max_app
+FROM MarvelCharacters
+WHERE ALIGN is not NULL
+GROUP BY ALIGN
+ORDER BY max_app DESC
+
+
+
+WITH AlignGroup AS (
+    SELECT *
+    FROM MarvelCharacters
+    WHERE ALIGN is not NULL
+    GROUP BY ALIGN
+)
+-- ) максимальное, минимальное и среднее количество появлений персонажей.
+SELECT MAX(appearances) AS max_app,
+MIN(appearances) AS min_app,
+ROUND(AVG(appearances), 2) AS avg_app
+FROM AlignGroup
