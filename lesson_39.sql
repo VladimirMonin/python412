@@ -116,3 +116,66 @@ VALUES(1, 1), (1, 2), (2, 3), (2, 4);
 
 
 ---------ВЫБОРКА ДАННЫХ----------------
+
+-- 1. Получим название групп
+SELECT * FROM Groups;
+
+-- 2. Получим всех студентов python412 JOIN
+SELECT s.first_name, s.middle_name, s.last_name, s.age, g.group_name
+FROM Students s
+JOIN Groups g ON s.group_id = g.group_id
+WHERE g.group_name = 'python412';
+
+-- 3. Соберем всех преподов
+SELECT * FROM Teachers;
+
+-- 3.1 Добавляю препода 1 в группу 2
+INSERT INTO GroupsTeachers(group_id, teacher_id)
+VALUES(2, 1);
+
+-- 4. Я хочу взять Препода с фамилией Киркоров и проверить в каких ID группах он преподает. Таблица преподов левая. Таблица связей M2M правая
+
+SELECT t.teacher_id, t.first_name, t.middle_name, t.last_name, gt.group_id
+FROM Teachers t
+LEFT JOIN GroupsTeachers gt ON t.teacher_id = gt.teacher_id
+WHERE t.last_name = 'Киркоров';
+
+
+-- Добавим сюда JOIN групп
+SELECT t.teacher_id, t.first_name, t.middle_name, t.last_name, gt.group_id, g.group_name
+FROM Teachers t
+LEFT JOIN GroupsTeachers gt ON t.teacher_id = gt.teacher_id
+LEFT JOIN Groups g ON gt.group_id = g.group_id
+WHERE t.last_name = 'Киркоров';
+
+-- CONCAN - объединение строк, выведем группы через запятую
+SELECT t.first_name, t.last_name, GROUP_CONCAT(g.group_name, ', '), COUNT(g.group_name)
+FROM Teachers t
+LEFT JOIN GroupsTeachers gt ON t.teacher_id = gt.teacher_id
+LEFT JOIN Groups g ON gt.group_id = g.group_id
+GROUP BY t.teacher_id;
+
+
+-- 5. Получим всех студентов преподавателя с фамилией Киркоров
+SELECT g.group_name AS "Group", s.first_name AS Student_name, s.last_name AS Student_last_name
+FROM Teachers AS t
+JOIN GroupsTeachers AS gt ON t.teacher_id = gt.teacher_id
+JOIN Groups AS g ON gt.group_id = g.group_id
+JOIN Students AS s ON g.group_id = s.group_id
+WHERE t.last_name = 'Киркоров';
+
+
+-- 6. Выборка по всем преподам. Полсчитаем количество студентов и количество групп
+SELECT t.first_name, t.last_name, COUNT(s.student_id) AS students_count, COUNT(g.group_id) AS groups_count
+FROM Teachers t
+JOIN GroupsTeachers gt ON t.teacher_id = gt.teacher_id
+JOIN Groups g ON gt.group_id = g.group_id
+JOIN Students s ON g.group_id = s.group_id
+GROUP BY t.teacher_id;
+
+
+SELECT t.first_name, t.last_name, s.first_name AS student_name, s.group_id, g.group_name
+FROM Teachers t
+JOIN GroupsTeachers gt ON t.teacher_id = gt.teacher_id
+JOIN Groups g ON gt.group_id = g.group_id
+JOIN Students s ON g.group_id = s.group_id
