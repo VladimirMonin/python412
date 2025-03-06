@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS Groups(
 CREATE TABLE IF NOT EXISTS StudentCards(
     card_id INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER NOT NULL UNIQUE,
+    date_of_issue TEXT DEFAULT CURRENT_DATE,
     FOREIGN KEY (student_id) REFERENCES Students(student_id)
 );
 
@@ -39,6 +40,12 @@ CREATE TABLE IF NOT EXISTS GroupsTeachers(
     teacher_id INTEGER NOT NULL,
     FOREIGN KEY (group_id) REFERENCES Groups(group_id),
     FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id)
+
+    -- Требование уникальности пары ID
+   -- UNIQUE(group_id, teacher_id)
+
+   -- Вариант 2 - составной первичный ключ
+    PRIMARY KEY(group_id, teacher_id)
 );
 
 -- ТРИ ОСНОВНЫХ ТИПА СВЯЗЕЙ В SQL
