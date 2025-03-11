@@ -151,3 +151,64 @@ COMMIT;
 -- При синтаксической ошибке или нарушении ограничений (например, UNIQUE или NOT NULL) транзакция автоматически переходит в состояние "failed" (сбой). После этого любые дальнейшие операции в этой транзакции (кроме ROLLBACK) будут игнорироваться! SQLite не даст тебе сделать COMMIT сломанной транзакции.
 
 -- Если произойдёт системная ошибка (например, диск переполнился, отказ файловой системы), то транзакция также перейдет в состояние сбоя, но SQLite может даже автоматически сделать ROLLBACK в некоторых случаях.
+
+-- Попробуем сделать ошибку внутри транзакции
+
+-- Включить проверку целостности ключей
+PRAGMA foreign_keys = ON;
+
+
+BEGIN TRANSACTION;
+
+
+
+-- Это выполнится успешно
+INSERT INTO Students (first_name, last_name, group_id)
+VALUES ('Сергей', 'Безруков', 1);
+
+-- А тут ошибка! Нет такой группы с ID 999!
+INSERT INTO Students (first_name, last_name, group_id)
+VALUES ('Филипп', 'Киркоров', 999);
+
+
+-- Этот INSERT уже не выполнится, потому что транзакция в состоянии сбоя
+INSERT INTO Students (first_name, last_name, group_id)
+VALUES ('Алла', 'Пугачёва', 1);
+
+
+COMMIT;
+-- ROLLBACK;
+
+SELECT * FROM Students;
+
+------------------------------------------
+-- 1. Добавляю в таблицу со студентами email и телефон
+
+-- Можно так, но лучше полную версию команды BEGIN TRANSACTION;
+BEGIN;
+
+ALTER TABLE Students
+ADD COLUMN email TEXT default Null;
+
+-- Для Django есть смысл указать дефолт, а SQLITE пофиг. Запросы одинаковы
+ALTER TABLE Students
+ADD COLUMN phone TEXT;
+
+
+SELECT * FROM Students;
+-- ROLLBACK;
+COMMIT;
+
+-- 2. Сделаем одиночными индексами поля email и phone, а так же индекс из ФИО составной
+BEGIN TRANSACTION;
+
+CREATE INDEX idx_email ON Students(email);
+CREATE INDEX idx_phone ON Students(phone);
+CREATE INDEX idx_fio ON Students(first_name, middle_name, last_name);
+
+-- Внешний ключ на группы тоже индекс!
+CREATE INDEX idx_group_id ON Students(group_id);
+
+COMMIT;
+
+--------------TRIEGGERS-------------------
